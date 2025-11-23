@@ -9,11 +9,15 @@ import {
 } from "../ui/table";
 
 import { firebaseFireStore } from "../../../utils/shared/firebase";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { FaUser } from "react-icons/fa";
 
 type TypeOrder = {
   id: string,
+  createdDate: {
+    nanoseconds: number
+    seconds: number
+  },
   name: string,
   phone: string,
   email: string,
@@ -25,7 +29,9 @@ export default function BasicTableOne() {
   React.useEffect(() => {
     (async () => {
       try {
-        const querySnapshot = await getDocs(collection(firebaseFireStore, "contacts"));
+        const contactRef = collection(firebaseFireStore, "contacts")
+        const queryContact = query(contactRef, orderBy("createdDate", "desc"))
+        const querySnapshot = await getDocs(queryContact)
         if (!querySnapshot.empty) {
           const contacts = querySnapshot.docs.map((doc) => {
             return {
@@ -42,8 +48,10 @@ export default function BasicTableOne() {
       }
     })()
   }, [])
-  console.log(usersContact)
-
+  const getTime = (timeStamp: number) => {
+    const time = new Date(timeStamp * 1000)
+    return `${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()}`
+  }
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
       <div className="max-w-full overflow-x-auto" >
@@ -52,6 +60,12 @@ export default function BasicTableOne() {
             {/* Table Header */}
             < TableHeader className="border-b border-gray-100 dark:border-white/[0.05]" >
               <TableRow>
+                <TableCell
+                  isHeader
+                  className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                >
+                  Register At
+                </TableCell>
                 <TableCell
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -77,6 +91,9 @@ export default function BasicTableOne() {
             <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]" >
               {usersContact && usersContact.map((order: TypeOrder) => (
                 <TableRow key={order.id} >
+                  < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+                    {getTime(order.createdDate.seconds)}
+                  </TableCell>
                   <TableCell className="px-5 py-4 sm:px-6 text-start" >
                     <div className="flex items-center gap-3" >
                       <div className="w-10 h-10 overflow-hidden rounded-full flex justify-center items-center" >
