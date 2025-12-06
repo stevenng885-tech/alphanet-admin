@@ -2,56 +2,56 @@
 import React from "react";
 import {
   Table,
-  TableBody,
+  // TableBody,
   TableCell,
   TableHeader,
   TableRow,
 } from "../ui/table";
 
-import { firebaseFireStore } from "../../../utils/shared/firebase";
-import { collection, getDocs, orderBy, query } from "firebase/firestore";
-import { FaUser } from "react-icons/fa";
+// import { firebaseFireStore } from "../../../utils/shared/firebase";
+// import { collection, getDocs, orderBy, query } from "firebase/firestore";
+// import { FaUser } from "react-icons/fa";
 
-type TypeOrder = {
-  id: string,
-  createdDate: {
-    nanoseconds: number
-    seconds: number
-  },
-  name: string,
-  phone: string,
-  email: string,
-}
+// type TypeOrder = {
+//   id: string,
+//   createdDate: {
+//     nanoseconds: number
+//     seconds: number
+//   },
+//   name: string,
+//   phone: string,
+//   email: string,
+// }
 
 export default function BasicTableOne() {
-  const [usersContact, setUserContact] = React.useState<Array<TypeOrder>>([])
+  // const [usersContact, setUserContact] = React.useState<Array<TypeOrder>>([])
 
   React.useEffect(() => {
     (async () => {
       try {
-        const contactRef = collection(firebaseFireStore, "contacts")
-        const queryContact = query(contactRef, orderBy("createdDate", "desc"))
-        const querySnapshot = await getDocs(queryContact)
-        if (!querySnapshot.empty) {
-          const contacts = querySnapshot.docs.map((doc) => {
-            return {
-              ...doc.data() as TypeOrder,
-              id: doc.id
-            }
-          });
-          // setUserContact(contacts)
-        } else {
-          console.log([])
-        }
+        // const contactRef = collection(firebaseFireStore, "contacts")
+        // const queryContact = query(contactRef, orderBy("createdDate", "desc"))
+        // const querySnapshot = await getDocs(queryContact)
+        // if (!querySnapshot.empty) {
+        //   const contacts = querySnapshot.docs.map((doc) => {
+        //     return {
+        //       ...doc.data() as TypeOrder,
+        //       id: doc.id
+        //     }
+        //   });
+        //   setUserContact(contacts)
+        // } else {
+        //   console.log([])
+        // }
       } catch (error) {
         console.log(error)
       }
     })()
   }, [])
-  const getTime = (timeStamp: number) => {
-    const time = new Date(timeStamp * 1000)
-    return `${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()}`
-  }
+  // const getTime = (timeStamp: number) => {
+  //   const time = new Date(timeStamp * 1000)
+  //   return `${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()}`
+  // }
   return (
     <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
       <div className="max-w-full overflow-x-auto" >
@@ -88,7 +88,7 @@ export default function BasicTableOne() {
             </TableHeader>
 
             {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]" >
+            {/* <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]" >
               {usersContact && usersContact.map((order: TypeOrder) => (
                 <TableRow key={order.id} >
                   < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
@@ -122,7 +122,7 @@ export default function BasicTableOne() {
                 </TableRow>
               ))
               }
-            </TableBody>
+            </TableBody> */}
           </Table>
         </div>
       </div>
