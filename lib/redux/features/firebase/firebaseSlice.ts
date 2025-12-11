@@ -3,6 +3,7 @@ import { createAppSlice } from "../../createAppSlice";
 import { addUser, getUsers, updateUserByDocId } from "./firebaseAPI";
 import { TypeUser } from "@/types/firebase";
 import { TypeAddNewUserData, UpdateData } from "@/types/form";
+import { useUser } from "@clerk/nextjs";
 
 export interface FirebaseSliceState {
     value: number;

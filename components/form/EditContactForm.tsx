@@ -3,18 +3,16 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import Button from '@/components/ui/button/Button';
 import { IoIosWarning } from "react-icons/io";
 import React from 'react';
-import { firebaseFireStore } from '@/utils/shared/firebase';
 import { toast } from 'react-toastify';
 import { useUser } from '@clerk/nextjs';
 import ComponentCard from "../common/ComponentCard";
 import Label from "./Label";
 import Input from "./input/InputField";
 import TextArea from "./input/TextArea";
-import { TypeUser } from "@/types/firebase";
 import { updateUsersAsync } from "@/lib/redux/features/firebase/firebaseSlice";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { getUsersByDocId } from "@/lib/redux/features/firebase/firebaseAPI";
-import { TypeAddNewUserData, TypeAddNewUserFormData, UpdateData } from "@/types/form";
+import { TypeAddNewUserData, TypeEdiUserFormData } from "@/types/form";
 
 const rules = {
     name: {
@@ -51,11 +49,11 @@ export default function EditContactForm({ docId }: Props) {
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<TypeAddNewUserData>()
+    } = useForm<TypeEdiUserFormData>()
     const currentUser = useUser()
     const dispatch = useAppDispatch();
 
-    const onSubmit: SubmitHandler<TypeAddNewUserData> = async (data) => {
+    const onSubmit: SubmitHandler<TypeEdiUserFormData> = async (data) => {
         try {
             if (!currentUser.user) return Error()
             dispatch(updateUsersAsync({ docId, data }))
@@ -107,6 +105,14 @@ export default function EditContactForm({ docId }: Props) {
                                 <IoIosWarning /> {errors.phone.message}
                             </div>
                         }
+                    </div>
+                    <div>
+                        <Label>Tình Trạng</Label>
+                        <Input
+                            type="text"
+                            {...register("status")}
+                        />
+
                     </div>
                     <div>
                         <Label>Email</Label>

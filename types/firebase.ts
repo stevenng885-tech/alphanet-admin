@@ -5,6 +5,7 @@ export type TypeTimestamp = number
 export type TypeAssign = Array<{
     assignAt: TypeTimestamp,
     employeeName: string
+    uid: string
 }>
 
 

@@ -8,6 +8,11 @@ export type TypeAddNewUserFormData = {
     email: string
     source: string
     note: string
+    status: string
+}
+export type TypeEdiUserFormData = TypeAddNewUserFormData & {
+
+    status: string
 }
 export type TypeAddNewUserData = TypeAddNewUserFormData & {
     assign: Array<{

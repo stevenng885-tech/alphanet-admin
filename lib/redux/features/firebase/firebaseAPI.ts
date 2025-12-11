@@ -68,7 +68,10 @@ export const updateUserByDocId = async (
 ) => {
   try {
     const docRef = doc(firebaseFireStore, "users", docId);
-    await updateDoc(docRef, data);
+    await updateDoc(docRef, {
+      ...data,
+      lasteUpadteAt: timeStamp()
+    });
     return await getUsers();
   } catch (error) {
     console.error(error);

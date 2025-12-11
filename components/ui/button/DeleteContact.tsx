@@ -16,12 +16,10 @@ const DeleteContact = ({ docId }: Props) => {
 
     const handleDeleteContact = async () => {
         try {
-
             dispatch(updateUsersAsync({ docId: docId, data: { isDelete: true } }))
             toast.success("Thành Công")
         } catch (error) {
             toast.info("Lỗi, Vui Lòng Liên Hệ Dev !!")
-
         }
     }
     return (

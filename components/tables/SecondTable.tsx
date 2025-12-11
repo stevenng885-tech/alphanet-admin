@@ -1,5 +1,11 @@
 "use client"
-import React from 'react'
+import { useUsers } from '@/hooks/useUsers';
+import { TypeAssign, TypeUser } from '@/types/firebase';
+import { orderBy } from '@/utils/shared/array';
+import React from 'react';
+import { PrimaryTooltip } from '../common/PrimaryTooltip';
+import DeleteContact from '../ui/button/DeleteContact';
+import EditContact from '../ui/button/EditContact';
 import {
     Table,
     TableBody,
@@ -8,21 +14,11 @@ import {
     TableRow,
 } from "../ui/table";
 
-import { FaInfo } from "react-icons/fa";
-import Button from '../ui/button/Button';
-import { PrimaryTooltip } from '../common/PrimaryTooltip';
-import EditContact from '../ui/button/EditContact';
-import { TypeAssign, TypeUser } from '@/types/firebase';
-import DeleteContact from '../ui/button/DeleteContact';
-import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
-import { getUsersAsync, selectUsers } from '@/lib/redux/features/firebase/firebaseSlice';
-import { orderBy } from '@/utils/shared/array';
-
 
 const SecondTable = () => {
 
-    const dispatch = useAppDispatch();
-    const users = useAppSelector(selectUsers);
+
+    const { users, getUser } = useUsers()
 
     const getTime = (timeStamp: number) => {
         const time = new Date(timeStamp)
@@ -45,7 +41,7 @@ const SecondTable = () => {
     }
 
     React.useEffect(() => {
-        dispatch(getUsersAsync())
+        getUser()
     }, [])
 
     return (
@@ -153,15 +149,22 @@ const SecondTable = () => {
                                         {order.source}
                                     </TableCell>
                                     < TableCell className="flex gap-1 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        <EditContact docId={order.id} />
+
+                                        <PrimaryTooltip content="Chỉnh Sửa">
+                                            <div>
+                                                <EditContact docId={order.id} />
+                                            </div>
+                                        </PrimaryTooltip>
                                         <PrimaryTooltip content="Xóa Liên Hệ">
-                                            <DeleteContact docId={order.id} />
+                                            <div>
+                                                <DeleteContact docId={order.id} />
+                                            </div>
                                         </PrimaryTooltip>
-                                        <PrimaryTooltip content="Chi Tiết">
-                                            <Button variant='outline' size='sm'>
-                                                <FaInfo />
-                                            </Button>
-                                        </PrimaryTooltip>
+                                        {/* <PrimaryTooltip content="Chi Tiết">
+                                            <div>
+                                                <ContactDetail docId={order.id} />
+                                            </div>
+                                        </PrimaryTooltip> */}
                                     </TableCell>
                                 </TableRow>
                             ))
