@@ -1,8 +1,4 @@
 import React, { forwardRef } from "react";
-import { FieldValues, UseFormRegister } from "react-hook-form";
-
-
-
 interface InputProps {
   type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
   id?: string;
@@ -21,18 +17,13 @@ type Props = InputProps & React.InputHTMLAttributes<HTMLInputElement>;
 const Input = forwardRef<HTMLInputElement, Props>(
   ({
     type = "text",
-    id,
-    name,
-    placeholder,
-    defaultValue,
     className = "",
-    min,
-    max,
     step,
     disabled = false,
     success = false,
     error = false,
     hint,
+    ...preps
   }, ref) => {
     // Determine input styles based on state (disabled, success, error)
     let inputClasses = `h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 ${className}`;
@@ -52,13 +43,11 @@ const Input = forwardRef<HTMLInputElement, Props>(
       <div className="relative">
         <input
           type={type}
-          id={id}
-          placeholder={placeholder}
-          defaultValue={defaultValue}
           step={step}
           disabled={disabled}
           className={inputClasses}
           ref={ref}
+          {...preps}
         />
 
         {/* Optional Hint Text */}

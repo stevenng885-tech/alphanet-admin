@@ -1,17 +1,14 @@
 'use client'
-import React from 'react'
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
     DialogHeader,
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog"
-import Button from '../ui/button/Button'
 import { FaPlus } from 'react-icons/fa'
 import { DialogOverlay } from '@radix-ui/react-dialog'
-import DefaultInputs from '../form/form-elements/DefaultInputs'
+import NewContactForm from '../form/NewContactForm'
 
 const AddNewContact = () => {
     return (
@@ -22,12 +19,12 @@ const AddNewContact = () => {
                 </div>
             </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className=''>
                 <DialogHeader>
                     <DialogTitle>Thêm Thông Tin Liên Hệ</DialogTitle>
                 </DialogHeader>
                 <DialogOverlay>
-                    <DefaultInputs />
+                    <NewContactForm />
                 </DialogOverlay>
             </DialogContent>
         </Dialog>

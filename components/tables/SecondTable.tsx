@@ -8,60 +8,24 @@ import {
     TableRow,
 } from "../ui/table";
 
-import { collection, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
-import { FaUser } from "react-icons/fa";
-import { firebaseFireStore } from "@/utils/shared/firebase";
-import { MdDelete, MdModeEdit } from 'react-icons/md';
+import { FaInfo } from "react-icons/fa";
 import Button from '../ui/button/Button';
+import { PrimaryTooltip } from '../common/PrimaryTooltip';
+import EditContact from '../ui/button/EditContact';
+import { TypeAssign, TypeUser } from '@/types/firebase';
+import DeleteContact from '../ui/button/DeleteContact';
+import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks';
+import { getUsersAsync, selectUsers } from '@/lib/redux/features/firebase/firebaseSlice';
+import { orderBy } from '@/utils/shared/array';
 
-type TypeAssign = Array<{
-    assignAt: Timestamp,
-    employeeName: string
-}>
-
-type TypeOrder = {
-    id: string,
-    createdAt: Timestamp,
-    name: string
-    phone: string
-    email: string
-    source: string
-    label: Array<string>
-    assign: TypeAssign
-    lasteUpadteAt: Timestamp
-    status: string
-}
 
 const SecondTable = () => {
 
-    const [usersContact, setUserContact] = React.useState<Array<TypeOrder>>([])
-
-    React.useEffect(() => {
-        (async () => {
-            try {
-                const contactRef = collection(firebaseFireStore, "users")
-                const queryContact = query(contactRef, orderBy("createdAt", "desc"))
-                const querySnapshot = await getDocs(queryContact)
-                if (!querySnapshot.empty) {
-                    const contacts = querySnapshot.docs.map((doc) => {
-                        return {
-                            ...doc.data() as TypeOrder,
-                            id: doc.id
-                        }
-                    });
-                    console.log(contacts)
-                    setUserContact(contacts)
-                } else {
-                    console.log([])
-                }
-            } catch (error) {
-                console.log(error)
-            }
-        })()
-    }, [])
+    const dispatch = useAppDispatch();
+    const users = useAppSelector(selectUsers);
 
     const getTime = (timeStamp: number) => {
-        const time = new Date(timeStamp * 1000)
+        const time = new Date(timeStamp)
         const minusTen = (number: number) => number < 10 ? `0${number}` : number
         return (
             <div className='flex flex-col gap-1'>
@@ -80,13 +44,17 @@ const SecondTable = () => {
         )
     }
 
+    React.useEffect(() => {
+        dispatch(getUsersAsync())
+    }, [])
+
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
+        <div className="overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
+
             <div className="max-w-full overflow-x-auto" >
                 <div className="min-w-[1102px]" >
                     <Table>
-                        {/* Table Header */}
-                        < TableHeader className="border-b border-gray-100 dark:border-white/[0.05]" >
+                        <TableHeader className="border-b border-gray-400 dark:border-white/[0.05]" >
                             <TableRow>
                                 <TableCell
                                     isHeader
@@ -150,24 +118,17 @@ const SecondTable = () => {
                                 </TableCell>
                             </TableRow>
                         </TableHeader>
-
-                        {/* Table Body */}
-                        <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]" >
-                            {usersContact && usersContact.map((order: TypeOrder) => (
+                        <TableBody className="divide-y divide-gray-400 dark:divide-white/[0.05]">
+                            {users.length > 0 && orderBy(users, 'des', "createdAt").map((order: TypeUser) => (
                                 <TableRow key={order.id}>
                                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {getTime(order.createdAt.seconds)}
+                                        {getTime(order.createdAt)}
                                     </TableCell>
                                     <TableCell className="px-5 py-4 sm:px-6 text-start" >
                                         <div className="flex items-center gap-3" >
-                                            < div >
-                                                <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90" >
-                                                    {order.name}
-                                                </span>
-                                                < span className="block text-gray-500 text-theme-xs dark:text-gray-400" >
-                                                    {order.source}
-                                                </span>
-                                            </div>
+                                            <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90" >
+                                                {order.name}
+                                            </span>
                                         </div>
                                     </TableCell>
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
@@ -180,7 +141,7 @@ const SecondTable = () => {
                                         <Employee assign={order.assign} />
                                     </TableCell>
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {getTime(order.lasteUpadteAt.seconds)}
+                                        {getTime(order.lasteUpadteAt)}
                                     </TableCell>
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         <></>
@@ -192,12 +153,15 @@ const SecondTable = () => {
                                         {order.source}
                                     </TableCell>
                                     < TableCell className="flex gap-1 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        <Button variant='outline' size='sm'>
-                                            <MdModeEdit />
-                                        </Button>
-                                        <Button variant='outline' size='sm'>
-                                            <MdDelete />
-                                        </Button>
+                                        <EditContact docId={order.id} />
+                                        <PrimaryTooltip content="Xóa Liên Hệ">
+                                            <DeleteContact docId={order.id} />
+                                        </PrimaryTooltip>
+                                        <PrimaryTooltip content="Chi Tiết">
+                                            <Button variant='outline' size='sm'>
+                                                <FaInfo />
+                                            </Button>
+                                        </PrimaryTooltip>
                                     </TableCell>
                                 </TableRow>
                             ))

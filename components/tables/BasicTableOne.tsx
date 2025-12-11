@@ -11,13 +11,11 @@ import {
 import { collection, getDocs, orderBy, query } from "firebase/firestore";
 import { FaUser } from "react-icons/fa";
 import { firebaseFireStore } from "@/utils/shared/firebase";
+import { TypeTimestamp } from "@/types/firebase";
 
 type TypeOrder = {
   id: string,
-  createdDate: {
-    nanoseconds: number
-    seconds: number
-  },
+  createdDate: TypeTimestamp,
   name: string,
   phone: string,
   email: string,
@@ -49,7 +47,7 @@ export default function BasicTableOne() {
     })()
   }, [])
   const getTime = (timeStamp: number) => {
-    const time = new Date(timeStamp * 1000)
+    const time = new Date(timeStamp)
     return `${time.getDate()}-${time.getMonth() + 1}-${time.getFullYear()}`
   }
   return (
@@ -92,7 +90,7 @@ export default function BasicTableOne() {
               {usersContact && usersContact.map((order: TypeOrder) => (
                 <TableRow key={order.id} >
                   < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                    {getTime(order.createdDate.seconds)}
+                    {getTime(order.createdDate)}
                   </TableCell>
                   <TableCell className="px-5 py-4 sm:px-6 text-start" >
                     <div className="flex items-center gap-3" >
