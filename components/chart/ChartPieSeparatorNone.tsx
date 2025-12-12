@@ -84,10 +84,11 @@ export function ChartPieSeparatorNone() {
     const { users } = useUsers()
 
     const { clerkUsers } = useAdmin()
-
-    const chartData = clerkUsers.filter((user) => {
+    const allSales = clerkUsers.filter((user) => {
         return user.publicMetadata.role !== "admin"
-    }).map((user, index) => {
+    })
+
+    const chartData = allSales.map((user, index) => {
         const uid = user.id
         const usersIn = users.filter((item) => {
             return item.assign[item.assign.length - 1].uid === uid
@@ -103,7 +104,7 @@ export function ChartPieSeparatorNone() {
             <CardHeader className="items-center pb-0">
                 <CardTitle>Số Lượng Khách Hàng / Nhân Viên</CardTitle>
                 <CardDescription>
-                    {clerkUsers.map((user, index) => {
+                    {allSales.map((user, index) => {
                         return (
                             <div key={user.id} className="flex gap-1 items-center">
                                 <div className={`w-4 h-4 `} style={{ backgroundColor: colors[index] }}></div>
