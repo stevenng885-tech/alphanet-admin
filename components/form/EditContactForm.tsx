@@ -5,7 +5,8 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getUserByDocId } from "@/lib/redux/features/firebase/firebaseAPI";
 import { updateUsersAsync } from "@/lib/redux/features/firebase/firebaseSlice";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { TypeAddNewUserData, TypeEdiUserFormData } from "@/types/form";
+import { TypeUser } from '@/types/firebase';
+import { TypeEdiUserFormData } from "@/types/form";
 import { useUser } from '@clerk/nextjs';
 import React from 'react';
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
@@ -18,7 +19,6 @@ import TextArea from "./input/TextArea";
 import Label from "./Label";
 import MultiSelect from './MultiSelect';
 import Select from './Select';
-import { TypeUser } from '@/types/firebase';
 
 const rules = {
     name: {
@@ -137,7 +137,7 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                 console.log(error);
             }
         })()
-    }, [])
+    }, [docId, reset])
 
     return (
         <ComponentCard >
@@ -220,7 +220,7 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                         <Controller
                             control={form.control}
                             name="labels"
-                            render={({ field, fieldState }) => (
+                            render={({ field }) => (
                                 <MultiSelect
                                     placeholder="(Chưa Có Nhãn)"
                                     options={labels}

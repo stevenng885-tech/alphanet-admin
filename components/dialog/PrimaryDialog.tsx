@@ -1,13 +1,9 @@
-import { MdDelete } from 'react-icons/md'
 import {
     Dialog,
     DialogClose,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import React from 'react'
+    DialogContent
+} from "@/components/ui/dialog";
+import React from 'react';
 import { IoMdClose } from "react-icons/io";
 import Button from '../ui/button/Button';
 
@@ -47,11 +43,9 @@ const PrimaryDialog = ({ buttonOpen, children, onClose, onConfirm, onOpen, close
     }
     return (
         <Dialog open={isOpen} >
-
             <Button variant='outline' size='sm' onClick={handleOpen}>
                 {buttonOpen}
             </Button>
-
             <DialogContent
                 showCloseButton={false}
                 onEscapeKeyDown={handleClose}

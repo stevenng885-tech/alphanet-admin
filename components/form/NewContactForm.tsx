@@ -158,7 +158,7 @@ export default function NewContactForm() {
                         <Controller
                             control={form.control}
                             name="labels"
-                            render={({ field, fieldState }) => (
+                            render={({ field }) => (
                                 <MultiSelect
                                     placeholder="(Chưa Có Nhãn)"
                                     options={labels}

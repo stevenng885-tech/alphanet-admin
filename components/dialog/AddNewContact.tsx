@@ -1,13 +1,9 @@
 'use client'
 import {
-    Dialog,
-    DialogContent,
     DialogHeader,
-    DialogTitle,
-    DialogTrigger,
+    DialogTitle
 } from "@/components/ui/dialog"
 import { FaPlus } from 'react-icons/fa'
-import { DialogOverlay } from '@radix-ui/react-dialog'
 import NewContactForm from '../form/NewContactForm'
 import PrimaryDialog from "./PrimaryDialog"
 
