@@ -7,10 +7,12 @@ export const useAdmin = () => {
 
     const getClerkUserList = () => dispatch(getClerkUsersAsync())
     const clerkUsers = useAppSelector(selectClerkUsers) || [];
+    const allSales = clerkUsers.filter((user) => user.publicMetadata.role !== "admin")
 
     return {
         getClerkUserList,
-        clerkUsers
+        clerkUsers,
+        allSales
     }
 
 }

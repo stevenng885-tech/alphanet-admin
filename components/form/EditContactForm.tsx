@@ -92,7 +92,12 @@ export const labels = [
         value: "Chờ Kết Bạn",
         text: "Chờ Kết Bạn",
     },
+    {
+        value: "Khách Chết",
+        text: "Khách Chết",
+    },
 ]
+
 export default function EditContactForm({ docId, isDisable = false }: Props) {
     const form = useForm<TypeEdiUserFormData>()
     const {

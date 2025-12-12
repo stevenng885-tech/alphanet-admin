@@ -15,11 +15,25 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
+import Select from '../form/Select';
+import { FaAngleDown } from 'react-icons/fa';
+import { useForm } from 'react-hook-form';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
+import { useAdmin } from '@/hooks/useAdmin';
+import { labels } from '../form/EditContactForm';
+import { MdClear } from 'react-icons/md';
+import Button from '../ui/button/Button';
 
+type TypeFormData = {
+    uid: string
+}
 
 const SecondTable = () => {
 
-    const { users, } = useUsers()
+    const { users } = useUsers()
+    const { isAdmin } = useCurrentUser()
+    const { allSales } = useAdmin()
+    const { register, watch, formState, getValues, reset } = useForm<TypeFormData>()
 
     const getTime = (timeStamp: number) => {
         const time = new Date(timeStamp)
@@ -40,10 +54,49 @@ const SecondTable = () => {
             </React.Fragment>
         )
     }
-    const converUserr = orderBy(users.map((user) => ({ ...user, assignAt: user.assign[user.assign.length - 1].assignAt })), "des", "assignAt")
+
+    const value = watch()
+
+    const converUserr = React.useMemo(() => {
+        let newArr = []
+        newArr = orderBy(users.map((user) => ({ ...user, ...user.assign[user.assign.length - 1] })), "des", "assignAt")
+        if (!!getValues("uid")) {
+            newArr = newArr.filter((user) => user.uid == getValues("uid"))
+        }
+        return newArr
+    }, [formState, users, getValues, value])
+
+    const sales = allSales.map((sale) => ({
+        label: sale.username,
+        value: sale.id
+    }))
 
     return (
         <div className="overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
+            <div className='p-5 flex items-center gap-3'>
+                <div>
+                    Bộ Lọc
+                </div>
+                {
+                    isAdmin &&
+                    <div className="relative">
+                        <Select
+                            options={sales}
+                            placeholder='Chọn Người Chăm Sóc'
+                            className="dark:bg-dark-900 min-w-[100px]"
+                            {...register("uid")}
+                        />
+                        <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                            <FaAngleDown />
+                        </span>
+                    </div>
+                }
+                <PrimaryTooltip content="Xóa Lọc">
+                    <Button onClick={reset}>
+                        <MdClear />
+                    </Button>
+                </PrimaryTooltip>
+            </div>
             <div className="max-w-full overflow-x-auto" >
                 <div className="min-w-[1102px]" >
                     <Table>
