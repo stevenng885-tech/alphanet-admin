@@ -1,9 +1,16 @@
 "use client"
+import { useAdmin } from '@/hooks/useAdmin';
+import { useCurrentUser } from '@/hooks/useCurrentUser';
 import { useUsers } from '@/hooks/useUsers';
 import { TypeAssign, TypeUser } from '@/types/firebase';
 import { orderBy } from '@/utils/shared/array';
 import React from 'react';
+import { useForm } from 'react-hook-form';
+import { FaAngleDown } from 'react-icons/fa';
+import { MdClear } from 'react-icons/md';
 import { PrimaryTooltip } from '../common/PrimaryTooltip';
+import Select from '../form/Select';
+import Button from '../ui/button/Button';
 import DeleteContact from '../ui/button/DeleteContact';
 import DetailContact from '../ui/button/DetailContact';
 import EditContact from '../ui/button/EditContact';
@@ -15,14 +22,6 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
-import Select from '../form/Select';
-import { FaAngleDown } from 'react-icons/fa';
-import { useForm } from 'react-hook-form';
-import { useCurrentUser } from '@/hooks/useCurrentUser';
-import { useAdmin } from '@/hooks/useAdmin';
-import { labels } from '../form/EditContactForm';
-import { MdClear } from 'react-icons/md';
-import Button from '../ui/button/Button';
 
 type TypeFormData = {
     uid: string
@@ -33,7 +32,7 @@ const SecondTable = () => {
     const { users } = useUsers()
     const { isAdmin } = useCurrentUser()
     const { allSales } = useAdmin()
-    const { register, watch, formState, getValues, reset } = useForm<TypeFormData>()
+    const { register, getValues, reset } = useForm<TypeFormData>()
 
     const getTime = (timeStamp: number) => {
         const time = new Date(timeStamp)
@@ -55,8 +54,6 @@ const SecondTable = () => {
         )
     }
 
-    const value = watch()
-
     const converUserr = React.useMemo(() => {
         let newArr = []
         newArr = orderBy(users.map((user) => ({ ...user, ...user.assign[user.assign.length - 1] })), "des", "assignAt")
@@ -64,7 +61,7 @@ const SecondTable = () => {
             newArr = newArr.filter((user) => user.uid == getValues("uid"))
         }
         return newArr
-    }, [formState, users, getValues, value])
+    }, [users, getValues])
 
     const sales = allSales.map((sale) => ({
         label: sale.username,
@@ -72,7 +69,7 @@ const SecondTable = () => {
     }))
 
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
+        <div className="overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/5 dark:bg-white/3" >
             <div className='p-5 flex items-center gap-3'>
                 <div>
                     Bộ Lọc
@@ -100,7 +97,7 @@ const SecondTable = () => {
             <div className="max-w-full overflow-x-auto" >
                 <div className="min-w-[1102px]" >
                     <Table>
-                        <TableHeader className="border-b border-gray-400 dark:border-white/[0.05]" >
+                        <TableHeader className="border-b border-gray-400 dark:border-white/5" >
                             <TableRow>
                                 <TableCell
                                     isHeader
@@ -153,7 +150,7 @@ const SecondTable = () => {
                                 </TableCell>
                             </TableRow>
                         </TableHeader>
-                        <TableBody className="divide-y divide-gray-400 dark:divide-white/[0.05]">
+                        <TableBody className="divide-y divide-gray-400 dark:divide-white/5">
                             {converUserr.length > 0 && converUserr.map((order: TypeUser) => (
                                 <TableRow key={order.id}>
                                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
