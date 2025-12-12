@@ -1,24 +1,24 @@
 "use client";
-import { useForm, SubmitHandler } from "react-hook-form"
 import Button from '@/components/ui/button/Button';
-import { IoIosWarning } from "react-icons/io";
-import React from 'react';
-import { addDoc, collection } from 'firebase/firestore';
-import { firebaseFireStore } from '@/utils/shared/firebase';
-import { toast } from 'react-toastify';
-import { useUser } from '@clerk/nextjs';
-import { timeStamp } from '@/utils/shared/common';
-import ComponentCard from "../common/ComponentCard";
-import Label from "./Label";
-import Input from "./input/InputField";
-import TextArea from "./input/TextArea";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { addUsersAsync } from "@/lib/redux/features/firebase/firebaseSlice";
-import { TypeAddNewUserData, TypeAddNewUserFormData } from "@/types/form";
 import { useAdmin } from "@/hooks/useAdmin";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import Select from "./Select";
+import { addUsersAsync } from "@/lib/redux/features/firebase/firebaseSlice";
+import { useAppDispatch } from "@/lib/redux/hooks";
+import { TypeAddNewUserData, TypeAddNewUserFormData } from "@/types/form";
+import { timeStamp } from '@/utils/shared/common';
+import { useUser } from '@clerk/nextjs';
+import React from 'react';
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { FaAngleDown } from "react-icons/fa";
+import { IoIosWarning } from "react-icons/io";
+import { toast } from 'react-toastify';
+import ComponentCard from "../common/ComponentCard";
+import { labels } from "./EditContactForm";
+import Label from "./Label";
+import MultiSelect from "./MultiSelect";
+import Select from "./Select";
+import Input from "./input/InputField";
+import TextArea from "./input/TextArea";
 
 const rules = {
     name: {
@@ -47,12 +47,13 @@ const rules = {
 } as const;
 
 export default function NewContactForm() {
+    const form = useForm<TypeAddNewUserFormData>()
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset
-    } = useForm<TypeAddNewUserFormData>()
+    } = form
     const currentUser = useUser()
 
     const { clerkUsers } = useAdmin()
@@ -150,6 +151,22 @@ export default function NewContactForm() {
                         <Input
                             type="text"
                             {...register("status")}
+                        />
+                    </div>
+                    <div>
+                        <Label>Nhãn</Label>
+                        <Controller
+                            control={form.control}
+                            name="labels"
+                            render={({ field, fieldState }) => (
+                                <MultiSelect
+                                    placeholder="(Chưa Có Nhãn)"
+                                    options={labels}
+                                    value={field.value ?? []}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                />
+                            )}
                         />
                     </div>
                     <div>

@@ -58,14 +58,13 @@ const PrimaryDialog = ({ buttonOpen, children, onClose, onConfirm, onOpen, close
                 onPointerDownOutside={handleClose}
                 onInteractOutside={handleClose}
                 className='max-h-[80vh] overflow-y-scroll hidden-scroll-bar'
-
             >
                 <DialogClose className='flex justify-end'>
                     <IoMdClose onClick={handleClose} />
                 </DialogClose>
-                <React.Fragment>
+                <div >
                     {children}
-                </React.Fragment>
+                </div>
                 {isShowFooter &&
                     <div className='flex gap-2'>
                         <Button

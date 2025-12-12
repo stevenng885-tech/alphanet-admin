@@ -17,7 +17,9 @@ const EditContact = ({ docId }: Props) => {
             <DialogHeader>
                 <DialogTitle>Chỉnh sửa</DialogTitle>
             </DialogHeader>
-            <EditContactForm docId={docId} />
+            <div className='mt-5'>
+                <EditContactForm docId={docId} />
+            </div>
         </PrimaryDialog>
 
     )

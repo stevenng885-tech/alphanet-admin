@@ -51,7 +51,7 @@ type Props = {
     isDisable?: boolean
 }
 
-const labels = [
+export const labels = [
     {
         value: "Chưa Trả Lời",
         text: "Chưa Trả Lời",
@@ -215,7 +215,6 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                             {...register("status")}
                         />
                     </div>
-
                     <div>
                         <Label>Nhãn</Label>
                         <Controller

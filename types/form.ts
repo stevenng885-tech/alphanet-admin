@@ -12,11 +12,9 @@ export type TypeAddNewUserFormData = {
     assignId?: string
     status: string
     uid: string
+    labels?: Array<string>
 }
-export type TypeEdiUserFormData = TypeAddNewUserFormData & {
-
-    labels: Array<string>
-}
+export type TypeEdiUserFormData = TypeAddNewUserFormData & {}
 
 export type TypeAddNewUserData = TypeAddNewUserFormData & {
     assign: Array<{
