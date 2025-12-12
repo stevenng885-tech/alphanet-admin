@@ -18,6 +18,7 @@ import TextArea from "./input/TextArea";
 import Label from "./Label";
 import MultiSelect from './MultiSelect';
 import Select from './Select';
+import { TypeUser } from '@/types/firebase';
 
 const rules = {
     name: {
@@ -131,7 +132,7 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
         (async () => {
             try {
                 const res = await getUserByDocId(docId)
-                reset(res as TypeAddNewUserData)
+                reset(res as TypeUser)
             } catch (error) {
                 console.log(error);
             }

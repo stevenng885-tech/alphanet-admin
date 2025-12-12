@@ -22,4 +22,5 @@ export type TypeUser = {
     status: string
     note: string
     isFloating: boolean
+    uid: string
 }

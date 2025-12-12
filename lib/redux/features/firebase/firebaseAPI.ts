@@ -72,7 +72,6 @@ export const addUser = async (data: TypeAddNewUserData) => {
       isDelete: false,
       label: [],
       lasteUpadteAt: timeStamp(),
-      status: "Mới",
       isFloating: false,
       ...data,
     }
