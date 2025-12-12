@@ -57,6 +57,7 @@ const PrimaryDialog = ({ buttonOpen, children, onClose, onConfirm, onOpen, close
                 onEscapeKeyDown={handleClose}
                 onPointerDownOutside={handleClose}
                 onInteractOutside={handleClose}
+                className='max-h-[80vh] overflow-y-scroll hidden-scroll-bar'
 
             >
                 <DialogClose className='flex justify-end'>

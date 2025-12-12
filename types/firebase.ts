@@ -16,7 +16,7 @@ export type TypeUser = {
     phone: string
     email: string
     source: string
-    label: Array<string>
+    labels: Array<string>
     assign: TypeAssign
     lasteUpadteAt: TypeTimestamp
     status: string

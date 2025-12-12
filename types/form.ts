@@ -9,6 +9,7 @@ export type TypeAddNewUserFormData = {
     source: string
     note: string
     isFloating?: boolean
+    labels: Array<string>
     assignId?: string
 }
 export type TypeEdiUserFormData = TypeAddNewUserFormData & {

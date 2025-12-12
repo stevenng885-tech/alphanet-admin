@@ -8,7 +8,7 @@ import { useAppDispatch } from "@/lib/redux/hooks";
 import { TypeAddNewUserData, TypeEdiUserFormData } from "@/types/form";
 import { useUser } from '@clerk/nextjs';
 import React from 'react';
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { FaAngleDown } from 'react-icons/fa';
 import { IoIosWarning } from "react-icons/io";
 import { toast } from 'react-toastify';
@@ -16,6 +16,7 @@ import ComponentCard from "../common/ComponentCard";
 import Input from "./input/InputField";
 import TextArea from "./input/TextArea";
 import Label from "./Label";
+import MultiSelect from './MultiSelect';
 import Select from './Select';
 
 const rules = {
@@ -48,18 +49,62 @@ type Props = {
     docId: string,
     isDisable?: boolean
 }
+
+const labels = [
+    {
+        value: "Chưa Trả Lời",
+        text: "Chưa Trả Lời",
+    },
+    {
+        value: "Khách Tiềm Năng",
+        text: "Khách Tiềm Năng",
+    },
+    {
+        value: "Từ Chối",
+        text: "Từ Chối",
+    },
+    {
+        value: "Hẹn Lại",
+        text: "Hẹn Lại",
+    },
+    {
+        value: "Hứa Hẹn",
+        text: "Hứa Hẹn",
+    },
+    {
+        value: "Sắp Lên Vốn",
+        text: "Sắp Lên Vốn",
+    },
+    {
+        value: "Đang Giao Dịch",
+        text: "Đang Giao Dịch",
+    },
+    {
+        value: "Đã Đăng Ký",
+        text: "Đã Đăng Ký",
+    },
+    {
+        value: "Block",
+        text: "Block",
+    },
+    {
+        value: "Chờ Kết Bạn",
+        text: "Chờ Kết Bạn",
+    },
+]
 export default function EditContactForm({ docId, isDisable = false }: Props) {
+    const form = useForm<TypeEdiUserFormData>()
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<TypeEdiUserFormData>()
-
+        control,
+    } = form
     const currentUser = useUser()
     const dispatch = useAppDispatch();
 
-    const { getClerkUserList, clerkUsers } = useAdmin()
+    const { clerkUsers } = useAdmin()
     const { isAdmin } = useCurrentUser()
 
     const options = React.useMemo(() => {
@@ -70,6 +115,7 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
             }
         })
     }, [clerkUsers])
+
     const onSubmit: SubmitHandler<TypeEdiUserFormData> = async (data) => {
         try {
             if (!currentUser.user) return Error()
@@ -161,6 +207,32 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                                 <IoIosWarning /> {errors.source.message}
                             </div>
                         }
+                    </div>
+                    <div>
+                        <Label>Tình Trạng</Label>
+                        <Input
+                            type="text"
+                            disabled={isDisable}
+                            {...register("status")}
+                        />
+                    </div>
+
+                    <div>
+                        <Label>Nhãn</Label>
+                        <Controller
+                            control={form.control}
+                            name="labels"
+                            render={({ field, fieldState }) => (
+                                <MultiSelect
+                                    placeholder="(Chưa Có Nhãn)"
+                                    options={labels}
+                                    value={field.value ?? []}
+                                    onChange={field.onChange}
+                                    onBlur={field.onBlur}
+                                    disabled={isDisable}
+                                />
+                            )}
+                        />
                     </div>
                     {
                         isAdmin &&

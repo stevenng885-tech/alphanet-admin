@@ -5,7 +5,9 @@ import { orderBy } from '@/utils/shared/array';
 import React from 'react';
 import { PrimaryTooltip } from '../common/PrimaryTooltip';
 import DeleteContact from '../ui/button/DeleteContact';
+import DetailContact from '../ui/button/DetailContact';
 import EditContact from '../ui/button/EditContact';
+import PushFloatingUser from '../ui/button/PushFloatingUser';
 import {
     Table,
     TableBody,
@@ -13,15 +15,11 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
-import PushFloatingUser from '../ui/button/PushFloatingUser';
-import DetailContact from '../ui/button/DetailContact';
-import { FieldValue } from 'firebase/firestore';
 
 
 const SecondTable = () => {
 
-
-    const { users, getUser, } = useUsers()
+    const { users, } = useUsers()
 
     const getTime = (timeStamp: number) => {
         const time = new Date(timeStamp)
@@ -46,7 +44,6 @@ const SecondTable = () => {
 
     return (
         <div className="overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
-
             <div className="max-w-full overflow-x-auto" >
                 <div className="min-w-[1102px]" >
                     <Table>
@@ -70,12 +67,6 @@ const SecondTable = () => {
                                 >
                                     Số Điện Thoại
                                 </TableCell>
-                                {/* < TableCell
-                                    isHeader
-                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                >
-                                    Email
-                                </TableCell> */}
                                 < TableCell
                                     isHeader
                                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -88,12 +79,7 @@ const SecondTable = () => {
                                 >
                                     Cập Nhật Lần cuối
                                 </TableCell>
-                                < TableCell
-                                    isHeader
-                                    className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-                                >
-                                    Nhãn
-                                </TableCell>
+
                                 < TableCell
                                     isHeader
                                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -130,17 +116,11 @@ const SecondTable = () => {
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         {order.phone}
                                     </TableCell>
-                                    {/* < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {order.email}
-                                    </TableCell> */}
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         <Employee assign={order.assign} />
                                     </TableCell>
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         {getTime(order.lasteUpadteAt)}
-                                    </TableCell>
-                                    < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        <></>
                                     </TableCell>
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         {order.status}
