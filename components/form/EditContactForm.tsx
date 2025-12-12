@@ -180,14 +180,6 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                         />
                     </div>
                     <div>
-                        <Label>Tình Trạng</Label>
-                        <Input
-                            type="text"
-                            disabled={isDisable}
-                            {...register("status")}
-                        />
-                    </div>
-                    <div>
                         <Label>Email</Label>
                         <Input
                             type="text"
