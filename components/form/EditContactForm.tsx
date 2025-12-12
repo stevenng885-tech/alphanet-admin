@@ -99,7 +99,6 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
         handleSubmit,
         formState: { errors },
         reset,
-        control,
     } = form
     const currentUser = useUser()
     const dispatch = useAppDispatch();
@@ -170,6 +169,14 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                                 <IoIosWarning /> {errors.phone.message}
                             </div>
                         }
+                    </div>
+                    <div>
+                        <Label>UID</Label>
+                        <Input
+                            type="text"
+                            disabled={isDisable}
+                            {...register("uid")}
+                        />
                     </div>
                     <div>
                         <Label>Tình Trạng</Label>
