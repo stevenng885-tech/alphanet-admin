@@ -31,17 +31,28 @@ const chartData = [
 ]
 
 const colors = [
-    "#880000",
-    "#FFFF66",
-    "#CCFFFF",
-    "#33FFCC",
-    "#66FF00",
-    "#FFCCFF",
-    "#999966",
-    "#FF3399",
-    "#0033FF",
-    "#FFFFFF",
-]
+    "#FF5733",
+    "#FF8D1A",
+    "#FFC300",
+    "#4CAF50",
+    "#00C853",
+    "#00BFA5",
+    "#00ACC1",
+    "#0288D1",
+    "#3949AB",
+    "#5E35B1",
+    "#8E24AA",
+    "#D81B60",
+    "#EC407A",
+    "#F06292",
+    "#795548",
+    "#6D4C41",
+    "#546E7A",
+    "#90A4AE",
+    "#FFCDD2",
+    "#C8E6C9",
+];
+
 
 const chartConfig = {
     visitors: {
