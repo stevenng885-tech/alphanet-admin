@@ -139,6 +139,20 @@ export default function NewContactForm() {
                         }
                     </div>
                     <div>
+                        <Label>UID</Label>
+                        <Input
+                            type="text"
+                            {...register("uid")}
+                        />
+                    </div>
+                    <div>
+                        <Label>Tình Trạng</Label>
+                        <Input
+                            type="text"
+                            {...register("status")}
+                        />
+                    </div>
+                    <div>
                         <Label>Email</Label>
                         <Input
                             type="text"

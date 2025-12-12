@@ -10,10 +10,11 @@ export type TypeAddNewUserFormData = {
     note: string
     isFloating?: boolean
     assignId?: string
-}
-export type TypeEdiUserFormData = TypeAddNewUserFormData & {
     status: string
     uid: string
+}
+export type TypeEdiUserFormData = TypeAddNewUserFormData & {
+
     labels: Array<string>
 }
 

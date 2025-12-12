@@ -185,7 +185,6 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                             disabled={isDisable}
                             {...register("status")}
                         />
-
                     </div>
                     <div>
                         <Label>Email</Label>
