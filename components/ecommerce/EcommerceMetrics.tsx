@@ -25,7 +25,7 @@ const Grow = ({ percent }: { percent: number }) => {
 }
 
 export const EcommerceMetrics = () => {
-  const { userCount, users } = useUsers()
+  const { users } = useUsers()
   const currentTimeStamp = new Date().getTime()
   const oneDayMilisecond = (60 * 60 * 24) * 1000
   const excessTime = currentTimeStamp % oneDayMilisecond
@@ -69,7 +69,7 @@ export const EcommerceMetrics = () => {
               Tổng Khách Hàng
             </span>
             <h4 className="mt-2 font-bold text-gray-800 text-title-sm dark:text-white/90">
-              {userCount}
+              {users.length}
             </h4>
           </div>
           <Grow percent={newUserComparison} />

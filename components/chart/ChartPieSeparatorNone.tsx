@@ -86,7 +86,7 @@ export function ChartPieSeparatorNone() {
         }
     })
     return (
-        <div className="border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
             <CardHeader className="items-center pb-0">
                 <CardTitle>Số Lượng Khách Hàng / Nhân Viên</CardTitle>
                 <CardDescription>
