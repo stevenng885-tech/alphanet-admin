@@ -1,9 +1,11 @@
+"use client"
 import { ChartLine } from '@/components/chart/ChartLine'
 import { ChartPieSeparatorNone } from '@/components/chart/ChartPieSeparatorNone'
 import { EcommerceMetrics } from '@/components/ecommerce/EcommerceMetrics'
-import React from 'react'
+import { useCurrentUser } from '@/hooks/useCurrentUser'
 
 const Home = () => {
+    const { isAdmin } = useCurrentUser()
     return (
         <div className="grid grid-cols-12 gap-4 md:gap-6">
             <div className="col-span-12 space-y-6 xl:col-span-7">
@@ -11,10 +13,12 @@ const Home = () => {
 
                 <ChartLine />
             </div>
+            {
+                isAdmin && <div className="col-span-12 xl:col-span-5">
+                    <ChartPieSeparatorNone />
+                </div>
+            }
 
-            <div className="col-span-12 xl:col-span-5">
-                <ChartPieSeparatorNone />
-            </div>
 
             <div className="col-span-12">
             </div>
