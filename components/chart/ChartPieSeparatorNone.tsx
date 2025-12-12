@@ -74,7 +74,9 @@ export function ChartPieSeparatorNone() {
 
     const { clerkUsers } = useAdmin()
 
-    const chartData = clerkUsers.map((user, index) => {
+    const chartData = clerkUsers.filter((user) => {
+        return user.publicMetadata.role !== "admin"
+    }).map((user, index) => {
         const uid = user.id
         const usersIn = users.filter((item) => {
             return item.assign[item.assign.length - 1].uid === uid
