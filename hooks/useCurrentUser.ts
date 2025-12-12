@@ -8,6 +8,7 @@ export const useCurrentUser = () => {
         userId: user.user?.id,
         userName: user.user?.username,
         isAdmin: user.user?.publicMetadata.role === "admin",
-        publicMetaData: user.user?.publicMetadata
+        publicMetaData: user.user?.publicMetadata,
+        user: user.user
     }
 }

@@ -1,4 +1,4 @@
-import { Timestamp } from "firebase/firestore"
+import { FieldValue } from "firebase/firestore"
 
 export type TypeTimestamp = number
 
@@ -21,4 +21,5 @@ export type TypeUser = {
     lasteUpadteAt: TypeTimestamp
     status: string
     note: string
+    isFloating: boolean
 }

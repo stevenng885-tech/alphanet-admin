@@ -15,6 +15,10 @@ import TextArea from "./input/TextArea";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { addUsersAsync } from "@/lib/redux/features/firebase/firebaseSlice";
 import { TypeAddNewUserData, TypeAddNewUserFormData } from "@/types/form";
+import { useAdmin } from "@/hooks/useAdmin";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import Select from "./Select";
+import { FaAngleDown } from "react-icons/fa";
 
 const rules = {
     name: {
@@ -46,29 +50,56 @@ export default function NewContactForm() {
     const {
         register,
         handleSubmit,
-        watch,
         formState: { errors },
         reset
     } = useForm<TypeAddNewUserFormData>()
     const currentUser = useUser()
 
+    const { clerkUsers } = useAdmin()
+    const { isAdmin } = useCurrentUser()
 
+    const options = React.useMemo(() => {
+        return clerkUsers.map((user) => {
+            return {
+                value: user.id,
+                label: user.username
+            }
+        })
+    }, [clerkUsers])
     const dispatch = useAppDispatch();
 
     const onSubmit: SubmitHandler<TypeAddNewUserFormData> = async (data) => {
         try {
             if (!currentUser.user) return Error()
-            const metadata: TypeAddNewUserData = {
-                ...data,
-                assign: [
-                    {
-                        assignAt: timeStamp(),
-                        employeeName: currentUser.user.username as string,
-                        uid: currentUser.user.id
-                    }
-                ],
+            if (isAdmin) {
+                const employee = clerkUsers.find((order) => order.id === data.assignId)
+                if (!employee) return Error()
+                const metadata: TypeAddNewUserData = {
+                    ...data,
+                    assign: [
+                        {
+                            assignAt: timeStamp(),
+                            employeeName: employee.username as string,
+                            uid: employee.id as string
+                        }
+                    ],
+                }
+                delete metadata.assignId
+                dispatch(addUsersAsync(metadata))
+            } else {
+                const metadata: TypeAddNewUserData = {
+                    ...data,
+                    assign: [
+                        {
+                            assignAt: timeStamp(),
+                            employeeName: currentUser.user.username as string,
+                            uid: currentUser.user.id
+                        }
+                    ],
+                }
+                dispatch(addUsersAsync(metadata))
             }
-            dispatch(addUsersAsync(metadata))
+
             toast.success("Thành Công")
             reset()
         } catch (error) {
@@ -133,6 +164,23 @@ export default function NewContactForm() {
                             </div>
                         }
                     </div>
+                    {
+                        isAdmin &&
+                        <div>
+                            <Label>Chỉ Định</Label>
+                            <div className="relative">
+                                <Select
+                                    options={options}
+                                    placeholder="Select an option"
+                                    className="dark:bg-dark-900"
+                                    {...register("assignId")}
+                                />
+                                <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                                    <FaAngleDown />
+                                </span>
+                            </div>
+                        </div>
+                    }
                     <div className="space-y-6">
                         <div>
                             <Label>Ghi Chú</Label>

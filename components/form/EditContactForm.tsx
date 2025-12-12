@@ -1,18 +1,22 @@
 "use client";
-import { useForm, SubmitHandler } from "react-hook-form"
 import Button from '@/components/ui/button/Button';
-import { IoIosWarning } from "react-icons/io";
-import React from 'react';
-import { toast } from 'react-toastify';
-import { useUser } from '@clerk/nextjs';
-import ComponentCard from "../common/ComponentCard";
-import Label from "./Label";
-import Input from "./input/InputField";
-import TextArea from "./input/TextArea";
+import { useAdmin } from "@/hooks/useAdmin";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { getUserByDocId } from "@/lib/redux/features/firebase/firebaseAPI";
 import { updateUsersAsync } from "@/lib/redux/features/firebase/firebaseSlice";
 import { useAppDispatch } from "@/lib/redux/hooks";
-import { getUsersByDocId } from "@/lib/redux/features/firebase/firebaseAPI";
 import { TypeAddNewUserData, TypeEdiUserFormData } from "@/types/form";
+import { useUser } from '@clerk/nextjs';
+import React from 'react';
+import { SubmitHandler, useForm } from "react-hook-form";
+import { FaAngleDown } from 'react-icons/fa';
+import { IoIosWarning } from "react-icons/io";
+import { toast } from 'react-toastify';
+import ComponentCard from "../common/ComponentCard";
+import Input from "./input/InputField";
+import TextArea from "./input/TextArea";
+import Label from "./Label";
+import Select from './Select';
 
 const rules = {
     name: {
@@ -41,18 +45,31 @@ const rules = {
 } as const;
 
 type Props = {
-    docId: string
+    docId: string,
+    isDisable?: boolean
 }
-export default function EditContactForm({ docId }: Props) {
+export default function EditContactForm({ docId, isDisable = false }: Props) {
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
     } = useForm<TypeEdiUserFormData>()
+
     const currentUser = useUser()
     const dispatch = useAppDispatch();
 
+    const { getClerkUserList, clerkUsers } = useAdmin()
+    const { isAdmin } = useCurrentUser()
+
+    const options = React.useMemo(() => {
+        return clerkUsers.map((user) => {
+            return {
+                value: user.id,
+                label: user.username
+            }
+        })
+    }, [clerkUsers])
     const onSubmit: SubmitHandler<TypeEdiUserFormData> = async (data) => {
         try {
             if (!currentUser.user) return Error()
@@ -68,7 +85,7 @@ export default function EditContactForm({ docId }: Props) {
     React.useEffect(() => {
         (async () => {
             try {
-                const res = await getUsersByDocId(docId)
+                const res = await getUserByDocId(docId)
                 reset(res as TypeAddNewUserData)
             } catch (error) {
                 console.log(error);
@@ -85,6 +102,7 @@ export default function EditContactForm({ docId }: Props) {
                         <Input
                             type="text"
                             error={!!(errors.name)}
+                            disabled={isDisable}
                             {...register("name", rules.name)}
                         />
                         {
@@ -98,6 +116,7 @@ export default function EditContactForm({ docId }: Props) {
                         <Input
                             type="text"
                             error={!!(errors.phone)}
+                            disabled={isDisable}
                             {...register("phone", rules.phone)}
                         />
                         {
@@ -110,6 +129,7 @@ export default function EditContactForm({ docId }: Props) {
                         <Label>Tình Trạng</Label>
                         <Input
                             type="text"
+                            disabled={isDisable}
                             {...register("status")}
                         />
 
@@ -119,6 +139,7 @@ export default function EditContactForm({ docId }: Props) {
                         <Input
                             type="text"
                             error={!!(errors.email)}
+                            disabled={isDisable}
                             {...register("email", rules.email)}
                         />
                         {
@@ -132,6 +153,7 @@ export default function EditContactForm({ docId }: Props) {
                         <Input
                             type="text"
                             error={!!(errors.source)}
+                            disabled={isDisable}
                             {...register("source", rules.source)}
                         />
                         {
@@ -140,25 +162,44 @@ export default function EditContactForm({ docId }: Props) {
                             </div>
                         }
                     </div>
+                    {
+                        isAdmin &&
+                        <div>
+                            <Label>Chỉ Định</Label>
+                            <div className="relative">
+                                <Select
+                                    options={options}
+                                    placeholder="Select an option"
+                                    className="dark:bg-dark-900"
+                                />
+                                <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
+                                    <FaAngleDown />
+                                </span>
+                            </div>
+                        </div>
+                    }
                     <div className="space-y-6">
                         <div>
                             <Label>Ghi Chú</Label>
                             <TextArea
+                                disabled={isDisable}
                                 {...register("note")}
                             />
                         </div>
 
                     </div>
-                    <div className='flex gap-3'>
-                        <Button type="button" className='w-full' variant='outline'>
-                            Huỷ Bỏ
-                        </Button>
-                        <Button className='w-full' type="submit">
-                            Cập Nhật
-                        </Button>
-                    </div>
-                </div>
+                    {
+                        !isDisable && <div className='flex gap-3'>
+                            <Button type="button" className='w-full' variant='outline'>
+                                Huỷ Bỏ
+                            </Button>
+                            <Button className='w-full' type="submit">
+                                Cập Nhật
+                            </Button>
+                        </div>
+                    }
 
+                </div>
             </form>
         </ComponentCard >
     );

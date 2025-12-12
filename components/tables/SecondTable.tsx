@@ -13,12 +13,15 @@ import {
     TableHeader,
     TableRow,
 } from "../ui/table";
+import PushFloatingUser from '../ui/button/PushFloatingUser';
+import DetailContact from '../ui/button/DetailContact';
+import { FieldValue } from 'firebase/firestore';
 
 
 const SecondTable = () => {
 
 
-    const { users, getUser } = useUsers()
+    const { users, getUser, } = useUsers()
 
     const getTime = (timeStamp: number) => {
         const time = new Date(timeStamp)
@@ -39,10 +42,7 @@ const SecondTable = () => {
             </React.Fragment>
         )
     }
-
-    React.useEffect(() => {
-        getUser()
-    }, [])
+    const converUserr = orderBy(users.map((user) => ({ ...user, assignAt: user.assign[user.assign.length - 1].assignAt })), "des", "assignAt")
 
     return (
         <div className="overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
@@ -70,12 +70,12 @@ const SecondTable = () => {
                                 >
                                     Số Điện Thoại
                                 </TableCell>
-                                < TableCell
+                                {/* < TableCell
                                     isHeader
                                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                                 >
                                     Email
-                                </TableCell>
+                                </TableCell> */}
                                 < TableCell
                                     isHeader
                                     className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
@@ -115,10 +115,10 @@ const SecondTable = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody className="divide-y divide-gray-400 dark:divide-white/[0.05]">
-                            {users.length > 0 && orderBy(users, 'des', "createdAt").map((order: TypeUser) => (
+                            {converUserr.length > 0 && converUserr.map((order: TypeUser) => (
                                 <TableRow key={order.id}>
                                     <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {getTime(order.createdAt)}
+                                        {getTime(order.assign[order.assign.length - 1].assignAt)}
                                     </TableCell>
                                     <TableCell className="px-5 py-4 sm:px-6 text-start" >
                                         <div className="flex items-center gap-3" >
@@ -130,9 +130,9 @@ const SecondTable = () => {
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         {order.phone}
                                     </TableCell>
-                                    < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+                                    {/* < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         {order.email}
-                                    </TableCell>
+                                    </TableCell> */}
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         <Employee assign={order.assign} />
                                     </TableCell>
@@ -155,16 +155,21 @@ const SecondTable = () => {
                                                 <EditContact docId={order.id} />
                                             </div>
                                         </PrimaryTooltip>
+                                        <PrimaryTooltip content="Chi Tiết">
+                                            <div>
+                                                <DetailContact docId={order.id} />
+                                            </div>
+                                        </PrimaryTooltip>
                                         <PrimaryTooltip content="Xóa Liên Hệ">
                                             <div>
                                                 <DeleteContact docId={order.id} />
                                             </div>
                                         </PrimaryTooltip>
-                                        {/* <PrimaryTooltip content="Chi Tiết">
+                                        <PrimaryTooltip content="Thả Trôi Liên Hệ Này">
                                             <div>
-                                                <ContactDetail docId={order.id} />
+                                                <PushFloatingUser docId={order.id} />
                                             </div>
-                                        </PrimaryTooltip> */}
+                                        </PrimaryTooltip>
                                     </TableCell>
                                 </TableRow>
                             ))

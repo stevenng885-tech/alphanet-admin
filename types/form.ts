@@ -8,12 +8,13 @@ export type TypeAddNewUserFormData = {
     email: string
     source: string
     note: string
-    status: string
+    isFloating?: boolean
+    assignId?: string
 }
 export type TypeEdiUserFormData = TypeAddNewUserFormData & {
-
     status: string
 }
+
 export type TypeAddNewUserData = TypeAddNewUserFormData & {
     assign: Array<{
         assignAt: number,

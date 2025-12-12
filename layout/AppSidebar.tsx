@@ -24,14 +24,20 @@ const navItems: NavItem[] = [
   {
     icon: <IoGridOutline />,
     name: "Dashboard",
-    subItems: [{ name: "Ecommerce", path: "/", pro: false }],
+    path: "/",
   },
   {
-    name: "Contacts",
+    name: "Liên Hệ",
     icon: <FaUserFriends />,
     subItems: [
-      { name: "Web Data", path: "/users", pro: false },
-      { name: "User Contact", path: "/contacts", pro: false }
+      {
+        name: "Khách hàng",
+        path: "/contacts",
+      },
+      {
+        name: "Dữ Liệu Thả Nổi",
+        path: "/free-contact",
+      },
     ],
   },
 ];
@@ -92,14 +98,14 @@ const AppSidebar: React.FC = () => {
               >
                 <span
                   className={` ${openSubmenu?.type === menuType && openSubmenu?.index === index
-                    ? "menu-item-icon-active"
-                    : "menu-item-icon-inactive"
+                    ? "menu-item-icon-active dark:text-white"
+                    : "menu-item-icon-inactive dark:text-white"
                     }`}
                 >
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className={`menu-item-text`}>{nav.name}</span>
+                  <span className={`menu-item-text dark:text-white`}>{nav.name}</span>
                 )}
                 {(isExpanded || isHovered || isMobileOpen) && (
 
@@ -121,14 +127,14 @@ const AppSidebar: React.FC = () => {
                 >
                   <span
                     className={`${isActive(nav.path)
-                      ? "menu-item-icon-active"
-                      : "menu-item-icon-inactive"
+                      ? "menu-item-icon-active dark:text-white"
+                      : "menu-item-icon-inactive dark:text-white"
                       }`}
                   >
                     {nav.icon}
                   </span>
                   {(isExpanded || isHovered || isMobileOpen) && (
-                    <span className={`menu-item-text`}>{nav.name}</span>
+                    <span className={`menu-item-text dark:text-white`}>{nav.name}</span>
                   )}
                 </Link>
               )
@@ -152,8 +158,8 @@ const AppSidebar: React.FC = () => {
                       <Link
                         href={subItem.path}
                         className={`menu-dropdown-item ${isActive(subItem.path)
-                          ? "menu-dropdown-item-active"
-                          : "menu-dropdown-item-inactive"
+                          ? "menu-dropdown-item-active dark:text-white"
+                          : "menu-dropdown-item-inactive dark:text-white"
                           }`}
                       >
                         {subItem.name}
@@ -275,25 +281,21 @@ const AppSidebar: React.FC = () => {
       >
         <Link href="/">
           {isExpanded || isHovered || isMobileOpen ? (
-            <>
+            <div className="flex gap-4 items-center">
               <Image
-                className="dark:hidden"
-                src="/images/logo/logo.svg"
+                className=""
+                src="/images/logo/logo.webp"
                 alt="Logo"
-                width={150}
-                height={40}
+                width={50}
+                height={50}
               />
-              <Image
-                className="hidden dark:block"
-                src="/images/logo/logo-dark.svg"
-                alt="Logo"
-                width={150}
-                height={40}
-              />
-            </>
+              <div className="text-2xl font-bold bg-linear-to-br from-[#FF6F61] to-[#FF8E53] bg-clip-text text-transparent">
+                ALPHA NET
+              </div>
+            </div>
           ) : (
             <Image
-              src="/images/logo/logo-icon.svg"
+              src="/images/logo/logo.webp"
               alt="Logo"
               width={32}
               height={32}
@@ -306,7 +308,7 @@ const AppSidebar: React.FC = () => {
           <div className="flex flex-col gap-4">
             <div>
               <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered
+                className={`mb-4 text-xs uppercase flex leading-5 text-gray-400 ${!isExpanded && !isHovered
                   ? "lg:justify-center"
                   : "justify-start"
                   }`}

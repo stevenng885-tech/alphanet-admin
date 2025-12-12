@@ -18,8 +18,6 @@ export const metadata: Metadata = {
 const Home = () => {
     return (
         <div>
-            <PageBreadcrumb pageTitle="Users" />
-
             <div className="space-y-6">
                 <ComponentCard title="Quản Lý Khách Hàng" button={<AddNewContact />}>
                     <SecondTable />

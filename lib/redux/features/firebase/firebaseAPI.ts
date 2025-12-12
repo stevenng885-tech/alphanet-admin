@@ -1,9 +1,8 @@
-import { UseUserReturn } from "@/types/clerk";
 import { TypeUser } from "@/types/firebase";
 import { TypeAddNewUserData, UpdateData } from "@/types/form";
 import { timeStamp } from "@/utils/shared/common";
 import { firebaseFireStore } from "@/utils/shared/firebase";
-import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getCountFromServer, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 
 export const getUsers = async () => {
   try {
@@ -27,13 +26,35 @@ export const getUsers = async () => {
   }
 }
 
-export const getUsersByDocId = async (docId: string) => {
+export const getUsersRange = async (start: number, end: number) => {
+  try {
+    const contactRef = collection(firebaseFireStore, "users")
+    const queryContact = query(contactRef, where("isDelete", "==", false), where("createdAt", ">=", start), where("createdAt", "<=", end))
+    const querySnapshot = await getDocs(queryContact)
+    if (!querySnapshot.empty) {
+      const contacts = querySnapshot.docs.map((doc) => {
+        return {
+          ...doc.data() as TypeUser,
+          id: doc.id
+        }
+      });
+      return contacts
+    } else {
+      return []
+    }
+  } catch (error) {
+    console.log(error)
+    return []
+  }
+}
+
+export const getUserByDocId = async (docId: string) => {
   try {
     const docRef = doc(firebaseFireStore, "users", docId)
 
     const res = await getDoc(docRef)
     if (res.exists()) {
-      return res.data()
+      return res.data() as TypeUser
     } else {
       return []
     }
@@ -46,13 +67,14 @@ export const getUsersByDocId = async (docId: string) => {
 export const addUser = async (data: TypeAddNewUserData) => {
   try {
     const metadata = {
-      ...data,
       createdAt: timeStamp(),
       actions: [],
       isDelete: false,
       label: [],
       lasteUpadteAt: timeStamp(),
-      status: "Mới"
+      status: "Mới",
+      isFloating: false,
+      ...data,
     }
     await addDoc(collection(firebaseFireStore, "users"), metadata)
     return await getUsers()
@@ -78,4 +100,19 @@ export const updateUserByDocId = async (
     return await getUsers();
   }
 };
+
+export const getUserCount = async () => {
+  try {
+    const q = query(
+      collection(firebaseFireStore, "users"),
+      where("isDelete", "==", false)
+    );
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count;
+
+  } catch (error) {
+    console.log(error)
+    return []
+  }
+}
 

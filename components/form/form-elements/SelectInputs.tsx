@@ -4,7 +4,6 @@ import ComponentCard from "../../common/ComponentCard";
 import Label from "../Label";
 import Select from "../Select";
 import MultiSelect from "../MultiSelect";
-import { ChevronDownIcon } from "@/icons";
 import { FaChevronDown } from "react-icons/fa";
 
 export default function SelectInputs() {
@@ -16,9 +15,6 @@ export default function SelectInputs() {
 
   const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
-  const handleSelectChange = (value: string) => {
-    console.log("Selected value:", value);
-  };
 
   const multiOptions = [
     { value: "1", text: "Option 1", selected: false },
@@ -37,7 +33,6 @@ export default function SelectInputs() {
             <Select
               options={options}
               placeholder="Select Option"
-              onChange={handleSelectChange}
               className="dark:bg-dark-900"
             />
             <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">

@@ -1,7 +1,16 @@
-import { useCurrentUser } from "./useCurrentUser"
+import { getClerkUsersAsync, selectClerkUsers } from "@/lib/redux/features/clerk/clerkSlice";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 
 export const useAdmin = () => {
-    const { isAdmin } = useCurrentUser()
-    if (!isAdmin) return {}
+    const dispatch = useAppDispatch()
+
+
+    const getClerkUserList = () => dispatch(getClerkUsersAsync())
+    const clerkUsers = useAppSelector(selectClerkUsers) || [];
+
+    return {
+        getClerkUserList,
+        clerkUsers
+    }
 
 }

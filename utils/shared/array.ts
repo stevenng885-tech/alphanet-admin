@@ -1,3 +1,5 @@
+import { TypeUser } from "@/types/firebase";
+
 type TypeSortType = "asc" | "des"
 
 export function orderBy<T>(arr: T[], sortType: TypeSortType, key: keyof T): T[] {
@@ -17,4 +19,19 @@ export function orderBy<T>(arr: T[], sortType: TypeSortType, key: keyof T): T[] 
 
         return 0;
     });
+}
+
+
+export const selectUsersByRange = (arr: Array<TypeUser>, { start, end }: { start: number, end: number }) => {
+    return arr.filter((user) => {
+        console.log(start, end);
+        return user.createdAt >= start && user.createdAt <= end
+    })
+}
+
+export const selectUserslasteUpdateByRange = (arr: Array<TypeUser>, { start, end }: { start: number, end: number }) => {
+    return arr.filter((user) => {
+        console.log(start, end);
+        return user.lasteUpadteAt >= start && user.lasteUpadteAt <= end
+    })
 }
