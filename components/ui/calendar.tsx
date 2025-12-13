@@ -42,8 +42,8 @@ function Calendar({
       captionLayout={captionLayout}
       formatters={{
         // display month in numeric form in dropdown and caption
-        formatMonthDropdown: (date) => pad2(date.getMonth() + 1),
-        formatMonth: (date) => `${pad2(date.getMonth() + 1)}/${date.getFullYear()}`,
+        formatMonthDropdown: (date: Date) => pad2(date.getMonth() + 1),
+        formatCaption: (date: Date) => `${pad2(date.getMonth() + 1)}/${date.getFullYear()}`,
         ...formatters,
       }}
       classNames={{
