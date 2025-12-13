@@ -29,7 +29,6 @@ const rules = {
     },
     phone: {
         required: "Vui lòng nhập số điện thoại !!",
-        // VN numbers: 0xxxxxxxxx or +84xxxxxxxxx, prefixes 3/5/7/8/9
         pattern: {
             value: /^(?:\+?84|0)(?:3|5|7|8|9)\d{8}$/,
             message: "Vui lòng nhập đúng Số điện thoại !!",
@@ -42,7 +41,12 @@ const rules = {
         },
     },
     source: {
+        minLength: { value: 2, message: "Ít nhất phải có 2 ký tự" },
         required: "Vui lòng Nguồn Khách !!",
+    },
+    status: {
+        minLength: { value: 2, message: "Ít nhất phải có 2 ký tự" },
+        required: "Vui lòng chọn Tình Trạng !!",
     }
 } as const;
 
