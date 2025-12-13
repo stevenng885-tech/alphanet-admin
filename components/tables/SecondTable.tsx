@@ -250,7 +250,7 @@ const SecondTable = () => {
                 </div>
             </div>
             <div className="max-w-full overflow-x-auto" >
-                <div className="min-w-[1102px]" >
+                <div className={converUserr.length === 0 ? "min-w-full" : "min-w-[1102px]"} >
                     <Table>
                         <TableHeader className="border-b border-gray-400 dark:border-white/5" >
                             <TableRow>
@@ -306,73 +306,81 @@ const SecondTable = () => {
                             </TableRow>
                         </TableHeader>
                         <TableBody className="divide-y divide-gray-400 dark:divide-white/5">
-                            {converUserr.length > 0 && converUserr.map((order: UserWithLastAssign) => (
-                                <TableRow key={order.id}>
-                                    <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {getTime(order.assignAt)}
-                                    </TableCell>
-                                    <TableCell className="px-5 py-4 sm:px-6 text-start" >
-                                        {order.name}
-                                    </TableCell>
-                                    <TableCell className="flex gap-2 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        <div className="flex items-center gap-3" >
-                                            <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90" >
-                                                {hiddenPhones[order.id] ? maskPhone(order.phone) : order.phone}
-                                            </span>
-                                            <PrimaryTooltip content={hiddenPhones[order.id] ? "Hiện Số Điện Thoại" : "Ẩn Số Điện Thoại"}>
-                                                <Button aria-label={hiddenPhones[order.id] ? "Hiện số" : "Ẩn số"} size="sm" variant="outline" onClick={() => toggleHiddenPhone(order.id)}>
-                                                    {hiddenPhones[order.id] ? <FaEye /> : <LuEyeClosed />}
-                                                </Button>
-                                            </PrimaryTooltip>
-                                            <PrimaryTooltip content="Sao Chép Số Điện Thoại">
-                                                <Button aria-label="Sao chép số" size="sm" variant="outline" onClick={() => copyToClipboard(order.phone)}>
-                                                    <IoIosCopy />
-                                                </Button>
-                                            </PrimaryTooltip>
-                                            <PrimaryTooltip content="Gọi Số Điện Thoại">
-                                                <Button aria-label="Gọi số" size="sm" variant="outline" onClick={() => callPhone(order.phone)}>
-                                                    <FaPhone />
-                                                </Button>
-                                            </PrimaryTooltip>
-                                        </div>
-                                    </TableCell>
-                                    < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        <Employee assign={order.assign} />
-                                    </TableCell>
-                                    < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {getTime(order.lasteUpadteAt)}
-                                    </TableCell>
-                                    < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {order.status}
-                                    </TableCell>
-                                    < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {order.source}
-                                    </TableCell>
-                                    < TableCell className="flex gap-1 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-
-                                        <PrimaryTooltip content="Chỉnh Sửa">
-                                            <div>
-                                                <EditContact docId={order.id} />
-                                            </div>
-                                        </PrimaryTooltip>
-                                        <PrimaryTooltip content="Chi Tiết">
-                                            <div>
-                                                <DetailContact docId={order.id} />
-                                            </div>
-                                        </PrimaryTooltip>
-                                        <PrimaryTooltip content="Xóa Liên Hệ">
-                                            <div>
-                                                <DeleteContact docId={order.id} />
-                                            </div>
-                                        </PrimaryTooltip>
-                                        <PrimaryTooltip content="Thả Trôi Liên Hệ Này">
-                                            <div>
-                                                <PushFloatingUser docId={order.id} />
-                                            </div>
-                                        </PrimaryTooltip>
+                            {converUserr.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={8} className="py-20 text-center text-gray-500 dark:text-gray-400 font-bold text-2xl">
+                                        (TRỐNG...)
                                     </TableCell>
                                 </TableRow>
-                            ))
+                            ) : (
+                                converUserr.map((order: UserWithLastAssign) => (
+                                    <TableRow key={order.id}>
+                                        <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+                                            {getTime(order.assignAt)}
+                                        </TableCell>
+                                        <TableCell className="px-5 py-4 sm:px-6 text-start" >
+                                            {order.name}
+                                        </TableCell>
+                                        <TableCell className="flex gap-2 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+                                            <div className="flex items-center gap-3" >
+                                                <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90" >
+                                                    {hiddenPhones[order.id] ? maskPhone(order.phone) : order.phone}
+                                                </span>
+                                                <PrimaryTooltip content={hiddenPhones[order.id] ? "Hiện Số Điện Thoại" : "Ẩn Số Điện Thoại"}>
+                                                    <Button aria-label={hiddenPhones[order.id] ? "Hiện số" : "Ẩn số"} size="sm" variant="outline" onClick={() => toggleHiddenPhone(order.id)}>
+                                                        {hiddenPhones[order.id] ? <FaEye /> : <LuEyeClosed />}
+                                                    </Button>
+                                                </PrimaryTooltip>
+                                                <PrimaryTooltip content="Sao Chép Số Điện Thoại">
+                                                    <Button aria-label="Sao chép số" size="sm" variant="outline" onClick={() => copyToClipboard(order.phone)}>
+                                                        <IoIosCopy />
+                                                    </Button>
+                                                </PrimaryTooltip>
+                                                <PrimaryTooltip content="Gọi Số Điện Thoại">
+                                                    <Button aria-label="Gọi số" size="sm" variant="outline" onClick={() => callPhone(order.phone)}>
+                                                        <FaPhone />
+                                                    </Button>
+                                                </PrimaryTooltip>
+                                            </div>
+                                        </TableCell>
+                                        < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+                                            <Employee assign={order.assign} />
+                                        </TableCell>
+                                        < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+                                            {getTime(order.lasteUpadteAt)}
+                                        </TableCell>
+                                        < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+                                            {order.status}
+                                        </TableCell>
+                                        < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+                                            {order.source}
+                                        </TableCell>
+                                        < TableCell className="flex gap-1 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
+
+                                            <PrimaryTooltip content="Chỉnh Sửa">
+                                                <div>
+                                                    <EditContact docId={order.id} />
+                                                </div>
+                                            </PrimaryTooltip>
+                                            <PrimaryTooltip content="Chi Tiết">
+                                                <div>
+                                                    <DetailContact docId={order.id} />
+                                                </div>
+                                            </PrimaryTooltip>
+                                            <PrimaryTooltip content="Xóa Liên Hệ">
+                                                <div>
+                                                    <DeleteContact docId={order.id} />
+                                                </div>
+                                            </PrimaryTooltip>
+                                            <PrimaryTooltip content="Thả Trôi Liên Hệ Này">
+                                                <div>
+                                                    <PushFloatingUser docId={order.id} />
+                                                </div>
+                                            </PrimaryTooltip>
+                                        </TableCell>
+                                    </TableRow>
+                                ))
+                            )
                             }
                         </TableBody>
                     </Table>
