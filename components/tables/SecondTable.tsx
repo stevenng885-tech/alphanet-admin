@@ -25,6 +25,7 @@ import {
 import { Calendar22 } from '../datePicker/Calendar22';
 import { LuEyeClosed } from "react-icons/lu";
 import { IoIosCopy } from 'react-icons/io';
+import Input from '../form/input/InputField';
 
 type TypeFormData = {
     uid?: string
@@ -42,6 +43,8 @@ const SecondTable = () => {
     const [endDate, setEndDate] = React.useState<Date | undefined>(undefined)
     const [appliedRange, setAppliedRange] = React.useState<{ start?: number; end?: number }>({})
     const [hiddenPhones, setHiddenPhones] = React.useState<Record<string, boolean>>({})
+    const [searchText, setSearchText] = React.useState<string>("")
+    const [debouncedSearch, setDebouncedSearch] = React.useState<string>("")
 
     type UserWithLastAssign = TypeUser & (TypeAssign extends Array<infer U> ? U : never)
 
@@ -124,8 +127,45 @@ const SecondTable = () => {
                 return true
             })
         }
+        if (debouncedSearch && debouncedSearch.trim().length > 0) {
+            const s = debouncedSearch.trim().toLowerCase()
+            newArr = newArr.filter((user) => {
+                const uid = String(user.uid ?? "").toLowerCase()
+                const name = String(user.name ?? "").toLowerCase()
+                const phone = String(user.phone ?? "").toLowerCase()
+                const status = String(user.status ?? "").toLowerCase()
+                const source = String(user.source ?? "").toLowerCase()
+                return (
+                    uid.includes(s) ||
+                    name.includes(s) ||
+                    phone.includes(s) ||
+                    status.includes(s) ||
+                    source.includes(s)
+                )
+            })
+        }
         return newArr
-    }, [users, appliedUid, appliedRange])
+    }, [users, appliedUid, appliedRange, debouncedSearch])
+
+    React.useEffect(() => {
+        const t = setTimeout(() => setDebouncedSearch(searchText), 500)
+        return () => clearTimeout(t)
+    }, [searchText])
+
+    React.useEffect(() => {
+        if (!converUserr || converUserr.length === 0) return
+        setHiddenPhones((prev) => {
+            let updated = false
+            const next = { ...prev }
+            converUserr.forEach((u) => {
+                if (next[u.id] === undefined) {
+                    next[u.id] = true
+                    updated = true
+                }
+            })
+            return updated ? next : prev
+        })
+    }, [converUserr])
 
     const sales = allSales.map((sale) => ({
         label: sale.username,
@@ -135,6 +175,11 @@ const SecondTable = () => {
     return (
         <div className="overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/5 dark:bg-white/3" >
             <div className='p-5 flex items-center gap-3'>
+                <Input
+                    placeholder='UID, Tên, Số Điện Thoại,...'
+                    value={searchText}
+                    onChange={(e) => setSearchText(String(e.target.value))}
+                />
                 {
                     isAdmin &&
                     <div className="relative">
@@ -248,20 +293,20 @@ const SecondTable = () => {
                                     <TableCell className="flex gap-2 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         <div className="flex items-center gap-3" >
                                             <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90" >
-                                                {!hiddenPhones[order.id] ? maskPhone(order.phone) : order.phone}
+                                                {hiddenPhones[order.id] ? maskPhone(order.phone) : order.phone}
                                             </span>
-                                            <PrimaryTooltip content={!hiddenPhones[order.id] ? "Hiện Số Điện Thoại" : "Ẩn Số Điện Thoại"}>
-                                                <Button size="sm" variant="outline" onClick={() => toggleHiddenPhone(order.id)}>
-                                                    {!hiddenPhones[order.id] ? <FaEye /> : <LuEyeClosed />}
+                                            <PrimaryTooltip content={hiddenPhones[order.id] ? "Hiện Số Điện Thoại" : "Ẩn Số Điện Thoại"}>
+                                                <Button aria-label={hiddenPhones[order.id] ? "Hiện số" : "Ẩn số"} size="sm" variant="outline" onClick={() => toggleHiddenPhone(order.id)}>
+                                                    {hiddenPhones[order.id] ? <FaEye /> : <LuEyeClosed />}
                                                 </Button>
                                             </PrimaryTooltip>
                                             <PrimaryTooltip content="Sao Chép Số Điện Thoại">
-                                                <Button size="sm" variant="outline" onClick={() => copyToClipboard(order.phone)}>
+                                                <Button aria-label="Sao chép số" size="sm" variant="outline" onClick={() => copyToClipboard(order.phone)}>
                                                     <IoIosCopy />
                                                 </Button>
                                             </PrimaryTooltip>
                                             <PrimaryTooltip content="Gọi Số Điện Thoại">
-                                                <Button size="sm" variant="outline" onClick={() => callPhone(order.phone)}>
+                                                <Button aria-label="Gọi số" size="sm" variant="outline" onClick={() => callPhone(order.phone)}>
                                                     <FaPhone />
                                                 </Button>
                                             </PrimaryTooltip>
