@@ -28,6 +28,7 @@ function Calendar({
   buttonVariant?: React.ComponentProps<typeof Button>["variant"]
 }) {
   const defaultClassNames = getDefaultClassNames()
+  const pad2 = (n: number) => String(n).padStart(2, "0")
 
   return (
     <DayPicker
@@ -40,8 +41,9 @@ function Calendar({
       )}
       captionLayout={captionLayout}
       formatters={{
-        formatMonthDropdown: (date) =>
-          date.toLocaleString("default", { month: "short" }),
+        // display month in numeric form in dropdown and caption
+        formatMonthDropdown: (date) => pad2(date.getMonth() + 1),
+        formatMonth: (date) => `${pad2(date.getMonth() + 1)}/${date.getFullYear()}`,
         ...formatters,
       }}
       classNames={{

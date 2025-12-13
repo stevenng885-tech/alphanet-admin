@@ -5,7 +5,7 @@ import { useUsers } from '@/hooks/useUsers';
 import { TypeAssign, TypeUser } from '@/types/firebase';
 import { orderBy } from '@/utils/shared/array';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { FaAngleDown, FaFilter } from 'react-icons/fa';
 import { MdClear } from 'react-icons/md';
 import { PrimaryTooltip } from '../common/PrimaryTooltip';
@@ -33,8 +33,8 @@ const SecondTable = () => {
     const { users } = useUsers()
     const { isAdmin } = useCurrentUser()
     const { allSales } = useAdmin()
-    const { register, watch, reset } = useForm<TypeFormData>()
-    const watchedUid = watch("uid", "")
+    const { register, control, reset } = useForm<TypeFormData>()
+    const watchedUid = useWatch({ control, name: 'uid', defaultValue: "" })
     const [appliedUid, setAppliedUid] = React.useState<string | undefined>(undefined)
     const [startDate, setStartDate] = React.useState<Date | undefined>(undefined)
     const [endDate, setEndDate] = React.useState<Date | undefined>(undefined)

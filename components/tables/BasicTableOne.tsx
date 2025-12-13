@@ -53,12 +53,12 @@ export default function BasicTableOne() {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]" >
+    <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/5 dark:bg-white/3" >
       <div className="max-w-full overflow-x-auto" >
         <div className="min-w-[1102px]" >
           <Table>
             {/* Table Header */}
-            < TableHeader className="border-b border-gray-100 dark:border-white/[0.05]" >
+            < TableHeader className="border-b border-gray-100 dark:border-white/5" >
               <TableRow>
                 <TableCell
                   isHeader
@@ -88,7 +88,7 @@ export default function BasicTableOne() {
             </TableHeader>
 
             {/* Table Body */}
-            <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]" >
+            <TableBody className="divide-y divide-gray-100 dark:divide-white/5" >
               {usersContact && usersContact.map((order: TypeOrder) => (
                 <TableRow key={order.id} >
                   < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >

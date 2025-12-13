@@ -31,23 +31,6 @@ const chartConfig = {
 export function ChartLine() {
     const { users } = useUsers()
 
-    const time = new Date().getTime()
-    const oneDayMilisecond = (60 * 60 * 24) * 1000
-    const excessTime = time % oneDayMilisecond
-    const ranges = Array(6).fill(oneDayMilisecond).concat(excessTime)
-
-    const subtractDays = (date: Date, days: number) => {
-        const d = new Date(date);
-        d.setDate(d.getDate() - days);
-        return d;
-    };
-
-    const getTime = (timeStamp: number) => {
-        const time = new Date(timeStamp)
-        const minusTen = (number: number) => number < 10 ? `0${number}` : number
-        return `${minusTen(time.getDate())}`
-    }
-
     const startOfDay = (d: Date) => {
         const dt = new Date(d);
         dt.setHours(0, 0, 0, 0);
@@ -60,9 +43,8 @@ export function ChartLine() {
     }
     const pad2 = (n: number) => String(n).padStart(2, "0");
 
-    const safeUsers = users ?? [];
-
     const sevenDayUsers = React.useMemo(() => {
+        const safeUsers = users ?? [];
         const result = [];
         for (let i = 6; i >= 0; i--) {
             const day = new Date();
@@ -76,9 +58,9 @@ export function ChartLine() {
             });
         }
         return result;
-    }, [safeUsers]);
+    }, [users]);
     return (
-        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/3 md:p-6">
             <CardHeader>
                 <CardTitle>Số Lượng Khách Mới Mỗi Ngày</CardTitle>
                 <CardDescription>Lượng Khách Mới Trong 7 Ngày Gần Nhất</CardDescription>
