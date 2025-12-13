@@ -2,6 +2,7 @@ import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import { combineSlices, configureStore } from "@reduxjs/toolkit";
 import { firebaseSlice } from "./features/firebase/firebaseSlice";
 import { clerkSlice } from "./features/clerk/clerkSlice";
+import { firebaseListener } from "./features/firebase/listeners";
 
 const rootReducer = combineSlices(firebaseSlice, clerkSlice);
 export type RootState = ReturnType<typeof rootReducer>;
@@ -9,6 +10,7 @@ export type RootState = ReturnType<typeof rootReducer>;
 export const makeStore = () => {
   return configureStore({
     reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(firebaseListener.middleware),
   });
 };
 

@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaCalendarCheck, FaCaretDown, FaUserFriends } from "react-icons/fa";
+import { FaCalendarCheck, FaCaretDown, FaTrashAlt, FaUserFriends } from "react-icons/fa";
 import { IoGridOutline } from "react-icons/io5";
 import { useSidebar } from "../context/SidebarContext";
 import {
@@ -31,6 +31,7 @@ const navItems: NavItem[] = [
     name: "Nhiệm Vụ Hằng Ngày",
     path: "/daily-tasks",
   },
+
   {
     name: "Liên Hệ",
     icon: <FaUserFriends />,
@@ -44,6 +45,11 @@ const navItems: NavItem[] = [
         path: "/free-contact",
       },
     ],
+  },
+  {
+    icon: <FaTrashAlt />,
+    name: "Thùng Rác",
+    path: "/trash",
   },
 ];
 

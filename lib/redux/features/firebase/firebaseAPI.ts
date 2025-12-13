@@ -2,12 +2,33 @@ import { TypeUser } from "@/types/firebase";
 import { TypeAddNewUserData, UpdateData } from "@/types/form";
 import { timeStamp } from "@/utils/shared/common";
 import { firebaseFireStore } from "@/utils/shared/firebase";
-import { addDoc, collection, doc, getCountFromServer, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, getDocs, query, updateDoc, where } from "firebase/firestore";
 
 export const getUsers = async () => {
   try {
     const contactRef = collection(firebaseFireStore, "users")
-    const queryContact = query(contactRef, where("isDelete", "==", false))
+    const querySnapshot = await getDocs(contactRef)
+    if (!querySnapshot.empty) {
+      const contacts = querySnapshot.docs.map((doc) => {
+        return {
+          ...doc.data() as TypeUser,
+          id: doc.id
+        }
+      });
+      return contacts
+    } else {
+      return []
+    }
+  } catch (error) {
+    console.log(error)
+    return []
+  }
+}
+
+export const getDeletedUsers = async () => {
+  try {
+    const contactRef = collection(firebaseFireStore, "users")
+    const queryContact = query(contactRef, where("isDelete", "==", true))
     const querySnapshot = await getDocs(queryContact)
     if (!querySnapshot.empty) {
       const contacts = querySnapshot.docs.map((doc) => {
@@ -76,10 +97,10 @@ export const addUser = async (data: TypeAddNewUserData) => {
       ...data,
     }
     await addDoc(collection(firebaseFireStore, "users"), metadata)
-    return await getUsers()
+    return true
   } catch (error) {
     console.log(error)
-    return await getUsers()
+    return false
   }
 }
 
@@ -93,12 +114,23 @@ export const updateUserByDocId = async (
       ...data,
       lasteUpadteAt: timeStamp()
     });
-    return await getUsers();
+    return true;
   } catch (error) {
     console.error(error);
-    return await getUsers();
+    return false;
   }
 };
+
+export const deleteUserPermanently = async (docId: string) => {
+  try {
+    const docRef = doc(firebaseFireStore, "users", docId);
+    await deleteDoc(docRef)
+    return true
+  } catch (error) {
+    console.error(error)
+    return false
+  }
+}
 
 export const getUserCount = async () => {
   try {

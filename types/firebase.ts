@@ -34,4 +34,5 @@ export type TypeUser = {
     isFloating: boolean
     uid: string
     dailyReports?: TypeDailyReport[]
+    isDelete?: boolean
 }

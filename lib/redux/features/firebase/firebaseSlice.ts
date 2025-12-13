@@ -1,6 +1,6 @@
 import type { ReducerCreators } from "@reduxjs/toolkit";
 import { createAppSlice } from "../../createAppSlice";
-import { addUser, getUserCount, getUsers, updateUserByDocId } from "./firebaseAPI";
+import { addUser, getUserCount, getUsers, updateUserByDocId, getDeletedUsers, deleteUserPermanently } from "./firebaseAPI";
 import { TypeUser } from "@/types/firebase";
 import { TypeAddNewUserData, UpdateData } from "@/types/form";
 
@@ -8,6 +8,7 @@ export interface FirebaseSliceState {
     value: number;
     status: "success" | "loading" | "failed";
     users: Array<TypeUser>
+    deletedUsers: Array<TypeUser>
     isLoading: boolean
     userCount: number
 }
@@ -16,6 +17,7 @@ const initialState: FirebaseSliceState = {
     value: 0,
     status: "success",
     users: [],
+    deletedUsers: [],
     isLoading: false,
     userCount: 0
 };
@@ -35,7 +37,9 @@ export const firebaseSlice = createAppSlice({
                 },
                 fulfilled: (state, action) => {
                     state.status = "success";
-                    state.users = action.payload;
+                    const all = action.payload as Array<TypeUser>;
+                    state.users = all.filter(u => !u.isDelete);
+                    state.deletedUsers = all.filter(u => !!u.isDelete);
                     state.isLoading = false;
                 },
                 rejected: (state) => {
@@ -46,16 +50,14 @@ export const firebaseSlice = createAppSlice({
         ),
         updateUsersAsync: create.asyncThunk(
             async ({ docId, data }: { docId: string, data: UpdateData }) => {
-                const response = await updateUserByDocId(docId, data);
-                return response as Array<TypeUser>;
+                await updateUserByDocId(docId, data);
             },
             {
                 pending: (state) => {
                     state.isLoading = true;
                 },
-                fulfilled: (state, action) => {
+                fulfilled: (state) => {
                     state.status = "success";
-                    state.users = action.payload;
                     state.isLoading = false;
                 },
                 rejected: (state) => {
@@ -73,9 +75,8 @@ export const firebaseSlice = createAppSlice({
                 pending: (state) => {
                     state.isLoading = true;
                 },
-                fulfilled: (state, action) => {
+                fulfilled: (state) => {
                     state.status = "success";
-                    state.users = action.payload;
                     state.isLoading = false;
                 },
                 rejected: (state) => {
@@ -93,9 +94,46 @@ export const firebaseSlice = createAppSlice({
                 pending: (state) => {
                     state.isLoading = true;
                 },
+                fulfilled: (state) => {
+                    state.status = "success";
+                    state.isLoading = false;
+                },
+                rejected: (state) => {
+                    state.status = "failed";
+                    state.isLoading = false;
+                },
+            },
+        ),
+        getDeletedUsersAsync: create.asyncThunk(
+            async () => {
+                const response = await getDeletedUsers();
+                return response as Array<TypeUser>;
+            },
+            {
+                pending: (state) => {
+                    state.isLoading = true;
+                },
                 fulfilled: (state, action) => {
                     state.status = "success";
-                    state.users = action.payload;
+                    state.deletedUsers = action.payload;
+                    state.isLoading = false;
+                },
+                rejected: (state) => {
+                    state.status = "failed";
+                    state.isLoading = false;
+                },
+            },
+        ),
+        deleteUserPermanentlyAsync: create.asyncThunk(
+            async (docId: string) => {
+                await deleteUserPermanently(docId);
+            },
+            {
+                pending: (state) => {
+                    state.isLoading = true;
+                },
+                fulfilled: (state) => {
+                    state.status = "success";
                     state.isLoading = false;
                 },
                 rejected: (state) => {
@@ -127,13 +165,14 @@ export const firebaseSlice = createAppSlice({
     }),
     selectors: {
         selectUsers: (firebase) => firebase.users,
+        selectDeletedUsers: (firebase) => firebase.deletedUsers,
         selectUsersCount: (firebase) => firebase.userCount,
         selectStatus: (firebase) => firebase.status,
     },
 });
 
-export const { getUsersAsync, addUsersAsync, updateUsersAsync, getUserCountAsync } = firebaseSlice.actions;
+export const { getUsersAsync, addUsersAsync, updateUsersAsync, getUserCountAsync, getDeletedUsersAsync, deleteUserPermanentlyAsync } = firebaseSlice.actions;
 
-export const { selectUsers, selectStatus, selectUsersCount } = firebaseSlice.selectors;
+export const { selectUsers, selectStatus, selectUsersCount, selectDeletedUsers } = firebaseSlice.selectors;
 
 

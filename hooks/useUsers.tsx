@@ -1,4 +1,4 @@
-import { addUsersAsync, getUserCountAsync, getUsersAsync, selectUsers, selectUsersCount, updateUsersAsync } from '@/lib/redux/features/firebase/firebaseSlice'
+import { addUsersAsync, getUserCountAsync, getUsersAsync, selectUsers, selectUsersCount, updateUsersAsync, deleteUserPermanentlyAsync, selectDeletedUsers } from '@/lib/redux/features/firebase/firebaseSlice'
 import { useAppDispatch, useAppSelector } from '@/lib/redux/hooks'
 import { TypeAddNewUserData, UpdateData } from '@/types/form'
 import { useCurrentUser } from './useCurrentUser'
@@ -21,17 +21,23 @@ export const useUsers = () => {
     }
 
     const allUsers = useAppSelector(selectUsers)
+    const deletedUsers = useAppSelector(selectDeletedUsers)
     const userCount = useAppSelector(selectUsersCount)
     const users = allUsers.filter(doc => !doc.isFloating).filter((doc) => isAdmin ? doc : doc.assign.find((assign) => assign.uid === userId));
     const floatingUser = allUsers.filter((doc) => doc.isFloating);
+    const deleteUserPermanently = (docId: string) => {
+        dispatch(deleteUserPermanentlyAsync(docId))
+    }
     return {
         users,
         floatingUser,
         userCount,
+        deletedUsers,
 
         addUser,
         getUser,
         updateUserByDocId,
+        deleteUserPermanently,
         getUserCount,
 
     }
