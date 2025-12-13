@@ -15,6 +15,7 @@ interface MultiSelectProps {
   onBlur?: () => void;
   disabled?: boolean;
   placeholder?: string;
+  className?: string;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -25,6 +26,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   onBlur,
   disabled = false,
   placeholder = "Select option",
+  className = "",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const boxRef = React.useRef<HTMLDivElement>(null);
@@ -63,7 +65,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   useClickOutside(boxRef, () => setIsOpen(false))
 
   return (
-    <div className="w-full" >
+    <div className={`w-full ${className}`} >
       {label && (
         <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
           {label}
@@ -78,7 +80,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             onBlur={onBlur}
             tabIndex={0}
           >
-            <div className="mb-2 flex rounded-lg border border-gray-300 py-1.5 pl-3 pr-3 shadow-theme-xs outline-hidden transition focus:border-brand-300 focus:shadow-focus-ring dark:border-gray-700 dark:bg-gray-900 dark:focus:border-brand-300">
+            <div className="flex rounded-lg border border-gray-300 py-1.5 pl-3 pr-3 shadow-theme-xs outline-hidden transition focus:border-brand-300 focus:shadow-focus-ring dark:border-gray-700 dark:bg-gray-900 dark:focus:border-brand-300">
               <div className="flex flex-wrap flex-auto gap-2 ">
                 {selectedValuesText.length > 0 ? (
                   selectedValuesText.map((text, index) => (
@@ -147,7 +149,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
           {isOpen && (
             <div
               ref={boxRef}
-              className="absolute left-0 z-40 w-full overflow-y-auto bg-white rounded-lg shadow-sm top-full max-h-select dark:bg-gray-900"
+              className="mt-1 absolute left-0 z-40 w-full overflow-y-auto bg-white rounded-lg shadow-sm top-full max-h-select dark:bg-gray-900"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex flex-col">

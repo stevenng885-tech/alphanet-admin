@@ -10,6 +10,7 @@ import { FaAngleDown, FaEye, FaFilter, FaPhone } from 'react-icons/fa';
 import { MdClear } from 'react-icons/md';
 import { PrimaryTooltip } from '../common/PrimaryTooltip';
 import Select from '../form/Select';
+import MultiSelect from '../form/MultiSelect';
 import Button from '../ui/button/Button';
 import DeleteContact from '../ui/button/DeleteContact';
 import DetailContact from '../ui/button/DetailContact';
@@ -45,6 +46,11 @@ const SecondTable = () => {
     const [hiddenPhones, setHiddenPhones] = React.useState<Record<string, boolean>>({})
     const [searchText, setSearchText] = React.useState<string>("")
     const [debouncedSearch, setDebouncedSearch] = React.useState<string>("")
+    const [selectedLabels, setSelectedLabels] = React.useState<string[]>([])
+    const [appliedLabels, setAppliedLabels] = React.useState<string[]>([])
+    const selectedLabelsNormalized = React.useMemo(() => selectedLabels.map(s => String(s ?? "").trim().toLowerCase()), [selectedLabels])
+    const appliedLabelsNormalized = React.useMemo(() => appliedLabels.map(s => String(s ?? "").trim().toLowerCase()), [appliedLabels])
+    const labelsChanged = selectedLabelsNormalized.join(",") !== appliedLabelsNormalized.join(",")
 
     type UserWithLastAssign = TypeUser & (TypeAssign extends Array<infer U> ? U : never)
 
@@ -144,8 +150,15 @@ const SecondTable = () => {
                 )
             })
         }
+        if (appliedLabels && appliedLabels.length > 0) {
+            const normalizedApplied = appliedLabels.map(a => String(a ?? "").trim().toLowerCase()).filter(Boolean)
+            newArr = newArr.filter((user) => {
+                const labels = (user.labels ?? []).map(l => String(l ?? "").trim().toLowerCase())
+                return labels.some((l) => normalizedApplied.includes(l))
+            })
+        }
         return newArr
-    }, [users, appliedUid, appliedRange, debouncedSearch])
+    }, [users, appliedUid, appliedRange, debouncedSearch, appliedLabels])
 
     React.useEffect(() => {
         const t = setTimeout(() => setDebouncedSearch(searchText), 500)
@@ -194,13 +207,23 @@ const SecondTable = () => {
                         </span>
                     </div>
                 }
+                <div className="relative ">
+                    <MultiSelect
+                        options={React.useMemo(() => Array.from(new Set(users.flatMap(u => u.labels ?? []).map(l => String(l ?? "").trim()))).filter(Boolean).map(l => ({ value: l, text: l })), [users])}
+                        placeholder='Chọn nhãn'
+                        value={selectedLabels}
+                        onChange={(vals) => setSelectedLabels(vals)}
+                        className="min-w-[150px]"
+                    />
+                </div>
                 <Calendar22 value={startDate} onSelect={(d) => setStartDate(d)} placeholder="Ngày bắt đầu" />
                 /
                 <Calendar22 value={endDate} onSelect={(d) => setEndDate(d)} placeholder="Ngày kết thúc" />
                 <div className="flex items-center gap-2">
                     {((watchedUid && watchedUid !== appliedUid) ||
                         (toStartMs(startDate) !== appliedRange.start) ||
-                        (toEndMs(endDate) !== appliedRange.end)) && (
+                        (toEndMs(endDate) !== appliedRange.end) ||
+                        labelsChanged) && (
                             <PrimaryTooltip content="Áp dụng bộ lọc">
                                 <Button size="sm" onClick={() => {
                                     const s = toStartMs(startDate)
@@ -213,13 +236,14 @@ const SecondTable = () => {
                                     }
                                     setAppliedUid(watchedUid ? watchedUid : undefined)
                                     setAppliedRange({ start, end })
+                                    setAppliedLabels(selectedLabels)
                                 }}>
                                     <FaFilter />
                                 </Button>
                             </PrimaryTooltip>
                         )}
                     <PrimaryTooltip content="Xóa Lọc">
-                        <Button size="sm" onClick={() => { reset({ uid: "" }); setAppliedUid(undefined); setStartDate(undefined); setEndDate(undefined); setAppliedRange({}) }}>
+                        <Button size="sm" onClick={() => { reset({ uid: "" }); setAppliedUid(undefined); setStartDate(undefined); setEndDate(undefined); setAppliedRange({}); setSelectedLabels([]); setAppliedLabels([]) }}>
                             <MdClear />
                         </Button>
                     </PrimaryTooltip>

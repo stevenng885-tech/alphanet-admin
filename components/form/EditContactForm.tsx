@@ -125,7 +125,7 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
     const onSubmit: SubmitHandler<TypeEdiUserFormData> = async (data) => {
         try {
             if (!currentUser.user) return Error()
-            const payload: TypeEdiUserFormData = { ...data, labels: data.labels ?? [] }
+            const payload: TypeEdiUserFormData = { ...data, labels: (data.labels ?? []).map(l => String(l ?? "").trim()) }
             updateUserByDocId({ docId, data: payload })
             toast.success("Thành Công")
             reset(payload)

@@ -81,6 +81,7 @@ export default function NewContactForm() {
                 if (!employee) return Error()
                 const metadata: TypeAddNewUserData = {
                     ...data,
+                    labels: (data.labels ?? []).map(l => String(l ?? "").trim()),
                     assign: [
                         {
                             assignAt: timeStamp(),
@@ -94,6 +95,7 @@ export default function NewContactForm() {
             } else {
                 const metadata: TypeAddNewUserData = {
                     ...data,
+                    labels: (data.labels ?? []).map(l => String(l ?? "").trim()),
                     assign: [
                         {
                             assignAt: timeStamp(),
