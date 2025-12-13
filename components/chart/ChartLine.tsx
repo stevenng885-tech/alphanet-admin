@@ -15,16 +15,20 @@ import {
     ChartTooltipContent,
 } from "@/components/ui/chart"
 import { useUsers } from "@/hooks/useUsers"
-import { selectUsersByRange } from "@/utils/shared/array"
+import { selectUsersByRange, selectUserslasteUpdateByRange } from "@/utils/shared/array"
 import React from "react"
 
 export const description = "A line chart"
 
 
 const chartConfig = {
-    desktop: {
-        label: "Desktop",
+    customer: {
+        label: "Khách hàng",
         color: "var(--chart-1)",
+    },
+    interact: {
+        label: "Tương tác",
+        color: "var(--chart-2)",
     },
 } satisfies ChartConfig
 
@@ -52,9 +56,11 @@ export function ChartLine() {
             const start = startOfDay(day);
             const end = endOfDay(day);
             const usersToDay = selectUsersByRange(safeUsers, { start, end });
+            const interactToDay = selectUserslasteUpdateByRange(safeUsers, { start, end });
             result.push({
                 day: pad2(day.getDate()),
                 customer: usersToDay.length,
+                interact: interactToDay.length,
             });
         }
         return result;
@@ -81,19 +87,30 @@ export function ChartLine() {
                             tickLine={false}
                             axisLine={false}
                             tickMargin={12}
-                        // tickFormatter={(value) => value.slice(0, 3)}
+                            tickFormatter={(value) => `Ngày ${value}`}
                         />
                         <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent hideLabel />}
+                            content={<ChartTooltipContent
+                                labelFormatter={(value) => {
+                                    return `Ngày ${value}`
+                                }}
+                            />}
                         />
                         <Line
                             dataKey="customer"
                             type="natural"
-                            stroke="var(--color-desktop)"
+                            stroke="var(--color-customer)"
+                            strokeWidth={3}
+                            dot={true}
+                        />
+                        <Line
+                            dataKey="interact"
+                            type="natural"
+                            stroke="var(--color-interact)"
                             strokeWidth={2}
                             dot={false}
                         />
+
                     </LineChart>
                 </ChartContainer>
             </CardContent>
