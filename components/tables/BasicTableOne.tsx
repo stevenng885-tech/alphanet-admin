@@ -76,7 +76,7 @@ export default function BasicTableOne() {
                   isHeader
                   className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
                 >
-                  Số Điện Thọai
+                  Số Điện Thoại
                 </TableCell>
                 < TableCell
                   isHeader
@@ -113,8 +113,8 @@ export default function BasicTableOne() {
                       </div>
                     </div>
                   </TableCell>
-                  < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                    {order.phone}
+                  < TableCell className="px-4 py-3 text-gray-500 text-start text-sm dark:text-gray-400" >
+                    <span className="block truncate max-w-[140px]">{order.phone}</span>
                   </TableCell>
                   < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                     {order.email}

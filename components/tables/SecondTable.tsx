@@ -98,7 +98,7 @@ const SecondTable = () => {
             } else if (hours < 24) {
                 agoClass = "text-sm font-semibold text-brand-500 dark:text-brand-400"
             } else {
-                agoClass = "text-sm font-semibold text-gray-900 dark:text-white/90"
+                agoClass = "text-sm font-semibold text-red-500 dark:text-red-500"
             }
         }
 
@@ -237,7 +237,7 @@ const SecondTable = () => {
     }))
 
     return (
-        <div className="overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/5 dark:bg-white/3" >
+        <div className=" overflow-hidden rounded-xl border border-gray-400 bg-white dark:border-white/5 dark:bg-white/3" >
             <div className='p-5 flex items-center gap-3'>
                 <Input
                     placeholder='UID, Tên, Số Điện Thoại,...'
@@ -372,26 +372,28 @@ const SecondTable = () => {
                                         <TableCell className="px-5 py-4 sm:px-6 text-start" >
                                             {order.name}
                                         </TableCell>
-                                        <TableCell className="flex gap-2 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                            <div className="flex items-center gap-3" >
-                                                <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90" >
+                                        <TableCell className="flex gap-1 px-3 py-2 text-gray-500 text-start text-sm dark:text-gray-400" >
+                                            <div className="flex flex-col items-center gap-1" >
+                                                <span className="block font-medium text-gray-800 text-sm dark:text-white/90 truncate max-w-[140px]" >
                                                     {hiddenPhones[order.id] ? maskPhone(order.phone) : order.phone}
                                                 </span>
-                                                <PrimaryTooltip content={hiddenPhones[order.id] ? "Hiện Số Điện Thoại" : "Ẩn Số Điện Thoại"}>
-                                                    <Button aria-label={hiddenPhones[order.id] ? "Hiện số" : "Ẩn số"} size="sm" variant="outline" onClick={() => toggleHiddenPhone(order.id)}>
-                                                        {hiddenPhones[order.id] ? <FaEye /> : <LuEyeClosed />}
-                                                    </Button>
-                                                </PrimaryTooltip>
-                                                <PrimaryTooltip content="Sao Chép Số Điện Thoại">
-                                                    <Button aria-label="Sao chép số" size="sm" variant="outline" onClick={() => copyToClipboard(order.phone)}>
-                                                        <IoIosCopy />
-                                                    </Button>
-                                                </PrimaryTooltip>
-                                                <PrimaryTooltip content="Gọi Số Điện Thoại">
-                                                    <Button aria-label="Gọi số" size="sm" variant="outline" onClick={() => callPhone(order.phone)}>
-                                                        <FaPhone />
-                                                    </Button>
-                                                </PrimaryTooltip>
+                                                <div className='flex gap-1'>
+                                                    <PrimaryTooltip content={hiddenPhones[order.id] ? "Hiện Số Điện Thoại" : "Ẩn Số Điện Thoại"}>
+                                                        <Button aria-label={hiddenPhones[order.id] ? "Hiện số" : "Ẩn số"} size="xs" variant="outline" className="w-7 h-7" onClick={() => toggleHiddenPhone(order.id)}>
+                                                            {hiddenPhones[order.id] ? <FaEye size={14} /> : <LuEyeClosed size={14} />}
+                                                        </Button>
+                                                    </PrimaryTooltip>
+                                                    <PrimaryTooltip content="Sao Chép Số Điện Thoại">
+                                                        <Button aria-label="Sao chép số" size="xs" variant="outline" className="w-7 h-7" onClick={() => copyToClipboard(order.phone)}>
+                                                            <IoIosCopy size={14} />
+                                                        </Button>
+                                                    </PrimaryTooltip>
+                                                    <PrimaryTooltip content="Gọi Số Điện Thoại">
+                                                        <Button aria-label="Gọi số" size="xs" variant="outline" className="w-7 h-7" onClick={() => callPhone(order.phone)}>
+                                                            <FaPhone size={14} />
+                                                        </Button>
+                                                    </PrimaryTooltip>
+                                                </div>
                                             </div>
                                         </TableCell>
                                         < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
