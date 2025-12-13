@@ -19,6 +19,7 @@ import TextArea from "./input/TextArea";
 import Label from "./Label";
 import MultiSelect from './MultiSelect';
 import Select from './Select';
+import { useUsers } from '@/hooks/useUsers';
 
 const rules = {
     name: {
@@ -99,7 +100,7 @@ export const labels = [
 ]
 
 export default function EditContactForm({ docId, isDisable = false }: Props) {
-    const form = useForm<TypeEdiUserFormData>()
+    const form = useForm<TypeEdiUserFormData>({ defaultValues: { labels: [] } })
     const {
         register,
         handleSubmit,
@@ -111,6 +112,7 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
 
     const { clerkUsers } = useAdmin()
     const { isAdmin } = useCurrentUser()
+    const { updateUserByDocId } = useUsers()
 
     const options = React.useMemo(() => {
         return clerkUsers.map((user) => {
@@ -124,9 +126,10 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
     const onSubmit: SubmitHandler<TypeEdiUserFormData> = async (data) => {
         try {
             if (!currentUser.user) return Error()
-            dispatch(updateUsersAsync({ docId, data }))
+            const payload: TypeEdiUserFormData = { ...data, labels: data.labels ?? [] }
+            updateUserByDocId({ docId, data: payload })
             toast.success("Thành Công")
-            reset(data)
+            reset(payload)
         } catch (error) {
             toast.info("Lỗi, Vui Lòng Liên Hệ Dev !!")
             console.log(error)

@@ -20,7 +20,7 @@ import Button from "../ui/button/Button";
 import DetailContact from "../ui/button/DetailContact";
 
 const FloatingContactTable = () => {
-    const { floatingUser, getUser, updateUserByDocId } = useUsers()
+    const { floatingUser, updateUserByDocId } = useUsers()
     const { isAdmin, userName, userId } = useCurrentUser()
 
     const handleHintPhone = (phone: string) => {
