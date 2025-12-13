@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/chart"
 import { useUsers } from "@/hooks/useUsers"
 import { selectUsersByRange } from "@/utils/shared/array"
+import React from "react"
 
 export const description = "A line chart"
 
@@ -34,6 +35,7 @@ export function ChartLine() {
     const oneDayMilisecond = (60 * 60 * 24) * 1000
     const excessTime = time % oneDayMilisecond
     const ranges = Array(6).fill(oneDayMilisecond).concat(excessTime)
+
     const subtractDays = (date: Date, days: number) => {
         const d = new Date(date);
         d.setDate(d.getDate() - days);
@@ -46,19 +48,35 @@ export function ChartLine() {
         return `${minusTen(time.getDate())}`
     }
 
-    const sevenDayUsers = ranges.map((range, index) => {
-        const days = ranges.length - (index)
-        const usersToDay = selectUsersByRange(users, {
-            start: time - (range * days),
-            end: days == 1 ? time : time - (range * days + 1)
-        })
-        const today = subtractDays(new Date, days - 1)
+    const startOfDay = (d: Date) => {
+        const dt = new Date(d);
+        dt.setHours(0, 0, 0, 0);
+        return dt.getTime();
+    }
+    const endOfDay = (d: Date) => {
+        const dt = new Date(d);
+        dt.setHours(23, 59, 59, 999);
+        return dt.getTime();
+    }
+    const pad2 = (n: number) => String(n).padStart(2, "0");
 
-        return {
-            day: getTime(today.getTime()),
-            customer: usersToDay.length
+    const safeUsers = users ?? [];
+
+    const sevenDayUsers = React.useMemo(() => {
+        const result = [];
+        for (let i = 6; i >= 0; i--) {
+            const day = new Date();
+            day.setDate(day.getDate() - i);
+            const start = startOfDay(day);
+            const end = endOfDay(day);
+            const usersToDay = selectUsersByRange(safeUsers, { start, end });
+            result.push({
+                day: pad2(day.getDate()),
+                customer: usersToDay.length,
+            });
         }
-    })
+        return result;
+    }, [safeUsers]);
     return (
         <div className="rounded-2xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] md:p-6">
             <CardHeader>

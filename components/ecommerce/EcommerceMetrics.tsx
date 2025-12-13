@@ -12,14 +12,14 @@ const Grow = ({ percent }: { percent: number }) => {
     return (
       <Badge color="success">
         <FaLongArrowAltUp />
-        {percent}%
+        {percent.toFixed(2)}%
       </Badge>
     )
   }
   return (
     <Badge color="error">
       <FaLongArrowAltDown className="text-error-500" />
-      {percent}%
+      {percent.toFixed(2)}%
     </Badge>
   )
 }
@@ -48,8 +48,9 @@ export const EcommerceMetrics = () => {
     start: currentTimeStamp - excessTime - oneDayMilisecond,
     end: currentTimeStamp - excessTime
   })
+
   const percentChange = (oldValue: number, newValue: number): number => {
-    if (oldValue === 0) return 100;
+    if (oldValue === 0) return 0;
     return ((newValue - oldValue) / oldValue) * 100;
   };
 
