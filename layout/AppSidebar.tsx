@@ -131,14 +131,14 @@ const AppSidebar: React.FC = () => {
               >
                 <span
                   className={` ${finalOpenSubmenu?.type === menuType && finalOpenSubmenu?.index === index
-                    ? "menu-item-icon-active dark:text-white"
-                    : "menu-item-icon-inactive dark:text-white"
+                    ? "menu-item-icon-active"
+                    : "menu-item-icon-inactive"
                     }`}
                 >
                   {nav.icon}
                 </span>
                 {(isExpanded || isHovered || isMobileOpen) && (
-                  <span className={`menu-item-text dark:text-white`}>{nav.name}</span>
+                  <span className={`menu-item-text`}>{nav.name}</span>
                 )}
                 {(isExpanded || isHovered || isMobileOpen) && (
 
@@ -160,14 +160,14 @@ const AppSidebar: React.FC = () => {
                 >
                   <span
                     className={`${isActive(nav.path)
-                      ? "menu-item-icon-active dark:text-white"
-                      : "menu-item-icon-inactive dark:text-white"
+                      ? "menu-item-icon-active"
+                      : "menu-item-icon-inactive"
                       }`}
                   >
                     {nav.icon}
                   </span>
                   {(isExpanded || isHovered || isMobileOpen) && (
-                    <span className={`menu-item-text dark:text-white`}>{nav.name}</span>
+                    <span className={`menu-item-text`}>{nav.name}</span>
                   )}
                 </Link>
               )
@@ -191,8 +191,8 @@ const AppSidebar: React.FC = () => {
                       <Link
                         href={subItem.path}
                         className={`menu-dropdown-item ${isActive(subItem.path)
-                          ? "menu-dropdown-item-active dark:text-white"
-                          : "menu-dropdown-item-inactive dark:text-white"
+                          ? "menu-dropdown-item-active"
+                          : "menu-dropdown-item-inactive"
                           }`}
                       >
                         {subItem.name}
