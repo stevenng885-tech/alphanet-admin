@@ -22,7 +22,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
       {/* Card Header */}
       {
         title ? <div className="px-6 py-5">
-          <h3 className="text-base font-medium text-gray-800 dark:text-white/90 flex justify-between">
+          <h3 className="text-3xl font-medium text-gray-800 dark:text-white/90 flex justify-between">
             {title}
             {button ? button : <></>}
           </h3>

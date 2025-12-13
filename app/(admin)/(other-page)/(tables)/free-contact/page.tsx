@@ -5,7 +5,9 @@ const Home = () => {
     return (
         <div>
             <div className="space-y-6">
-                <ComponentCard title="Dữ Liệu Thả Nổi">
+                <ComponentCard title="Dữ Liệu Thả Nổi"
+                    desc='Nhân Viên Có Thể Lấy Liên Hệ Từ Đây Khi Có Người Mới Đẩy Vào'
+                >
                     <FloatingContactTable />
                 </ComponentCard>
             </div>
