@@ -8,6 +8,17 @@ export type TypeAssign = Array<{
 }>
 
 
+export type TypeDailyReport = {
+    updatedAt: TypeTimestamp
+    callMade?: boolean
+    messageSent?: boolean
+    hasResponse?: boolean
+    progress?: string
+    note?: string
+    createdBy?: string
+    createdAt?: TypeTimestamp
+}
+
 export type TypeUser = {
     id: string,
     createdAt: TypeTimestamp,
@@ -22,4 +33,5 @@ export type TypeUser = {
     note: string
     isFloating: boolean
     uid: string
+    dailyReports?: TypeDailyReport[]
 }

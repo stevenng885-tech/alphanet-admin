@@ -16,6 +16,7 @@ import DeleteContact from '../ui/button/DeleteContact';
 import DetailContact from '../ui/button/DetailContact';
 import EditContact from '../ui/button/EditContact';
 import PushFloatingUser from '../ui/button/PushFloatingUser';
+import DailyReportButton from '../ui/button/DailyReportButton';
 import {
     Table,
     TableBody,
@@ -451,6 +452,11 @@ const SecondTable = () => {
                                             <PrimaryTooltip content="Thả Trôi Liên Hệ Này">
                                                 <div>
                                                     <PushFloatingUser docId={order.id} />
+                                                </div>
+                                            </PrimaryTooltip>
+                                            <PrimaryTooltip content="Báo Cáo Hằng Ngày">
+                                                <div>
+                                                    <DailyReportButton docId={order.id} />
                                                 </div>
                                             </PrimaryTooltip>
                                         </TableCell>

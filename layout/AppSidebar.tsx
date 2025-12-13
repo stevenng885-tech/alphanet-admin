@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaCaretDown, FaUserFriends } from "react-icons/fa";
+import { FaCalendarCheck, FaCaretDown, FaUserFriends } from "react-icons/fa";
 import { IoGridOutline } from "react-icons/io5";
 import { useSidebar } from "../context/SidebarContext";
 import {
@@ -25,6 +25,11 @@ const navItems: NavItem[] = [
     icon: <IoGridOutline />,
     name: "Dashboard",
     path: "/",
+  },
+  {
+    icon: <FaCalendarCheck />,
+    name: "Nhiệm Vụ Hằng Ngày",
+    path: "/daily-tasks",
   },
   {
     name: "Liên Hệ",
