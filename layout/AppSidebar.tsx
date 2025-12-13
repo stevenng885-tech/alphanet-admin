@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FaCalendarCheck, FaCaretDown, FaTrashAlt, FaUserFriends } from "react-icons/fa";
 import { IoGridOutline } from "react-icons/io5";
 import { useSidebar } from "../context/SidebarContext";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import {
   BoxCubeIcon,
   PieChartIcon,
@@ -18,6 +19,7 @@ type NavItem = {
   icon: React.ReactNode;
   path?: string;
   subItems?: { name: string; path: string; pro?: boolean; new?: boolean }[];
+  isAdminOnly?: boolean;
 };
 
 const navItems: NavItem[] = [
@@ -50,6 +52,7 @@ const navItems: NavItem[] = [
     icon: <FaTrashAlt />,
     name: "Thùng Rác",
     path: "/trash",
+    isAdminOnly: true,
   },
 ];
 
@@ -86,7 +89,16 @@ const othersItems: NavItem[] = [
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isAdmin } = useCurrentUser();
   const pathname = usePathname();
+
+  // Filter navItems based on admin status
+  const filteredNavItems = navItems.filter(item => {
+    if (item.isAdminOnly) {
+      return isAdmin;
+    }
+    return true;
+  });
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -326,7 +338,7 @@ const AppSidebar: React.FC = () => {
                   <HiDotsHorizontal />
                 )}
               </h2>
-              {renderMenuItems(navItems, "main")}
+              {renderMenuItems(filteredNavItems, "main")}
             </div>
           </div>
         </nav>
