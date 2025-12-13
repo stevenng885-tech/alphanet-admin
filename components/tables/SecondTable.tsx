@@ -30,6 +30,14 @@ import Input from '../form/input/InputField';
 
 type TypeFormData = {
     uid?: string
+    search?: string
+    startDate?: Date | undefined
+    endDate?: Date | undefined
+    selectedLabels?: string[]
+    appliedUid?: string | undefined
+    appliedStart?: number | undefined
+    appliedEnd?: number | undefined
+    appliedLabels?: string[]
 }
 
 const SecondTable = () => {
@@ -37,19 +45,33 @@ const SecondTable = () => {
     const { users } = useUsers()
     const { isAdmin } = useCurrentUser()
     const { allSales } = useAdmin()
-    const { register, control, reset } = useForm<TypeFormData>()
+    const { register, control, reset, setValue } = useForm<TypeFormData>({
+        defaultValues: {
+            uid: "",
+            search: "",
+            startDate: undefined,
+            endDate: undefined,
+            selectedLabels: [],
+            appliedUid: undefined,
+            appliedStart: undefined,
+            appliedEnd: undefined,
+            appliedLabels: []
+        }
+    })
     const watchedUid = useWatch({ control, name: 'uid', defaultValue: "" })
-    const [appliedUid, setAppliedUid] = React.useState<string | undefined>(undefined)
-    const [startDate, setStartDate] = React.useState<Date | undefined>(undefined)
-    const [endDate, setEndDate] = React.useState<Date | undefined>(undefined)
-    const [appliedRange, setAppliedRange] = React.useState<{ start?: number; end?: number }>({})
+    const watchedStartDate = useWatch({ control, name: 'startDate' })
+    const watchedEndDate = useWatch({ control, name: 'endDate' })
+    const watchedSelectedLabels = useWatch({ control, name: 'selectedLabels', defaultValue: [] })
+    const appliedUid = useWatch({ control, name: 'appliedUid' })
+    const appliedStart = useWatch({ control, name: 'appliedStart' })
+    const appliedEnd = useWatch({ control, name: 'appliedEnd' })
+    const appliedLabels = useWatch({ control, name: 'appliedLabels', defaultValue: [] })
     const [hiddenPhones, setHiddenPhones] = React.useState<Record<string, boolean>>({})
     const [searchText, setSearchText] = React.useState<string>("")
     const [debouncedSearch, setDebouncedSearch] = React.useState<string>("")
-    const [selectedLabels, setSelectedLabels] = React.useState<string[]>([])
-    const [appliedLabels, setAppliedLabels] = React.useState<string[]>([])
+    const selectedLabels = React.useMemo(() => watchedSelectedLabels ?? [], [watchedSelectedLabels])
     const selectedLabelsNormalized = React.useMemo(() => selectedLabels.map(s => String(s ?? "").trim().toLowerCase()), [selectedLabels])
-    const appliedLabelsNormalized = React.useMemo(() => appliedLabels.map(s => String(s ?? "").trim().toLowerCase()), [appliedLabels])
+    const appliedLabelsNormalized = React.useMemo(() => (appliedLabels ?? []).map(s => String(s ?? "").trim().toLowerCase()), [appliedLabels])
     const labelsChanged = selectedLabelsNormalized.join(",") !== appliedLabelsNormalized.join(",")
 
     type UserWithLastAssign = TypeUser & (TypeAssign extends Array<infer U> ? U : never)
@@ -173,9 +195,9 @@ const SecondTable = () => {
         if (!!appliedUid) {
             newArr = newArr.filter((user) => user.uid == appliedUid)
         }
-        if (appliedRange?.start !== undefined || appliedRange?.end !== undefined) {
-            const start = appliedRange.start ?? Number.MIN_SAFE_INTEGER
-            const end = appliedRange.end ?? Number.MAX_SAFE_INTEGER
+        if ((appliedStart !== undefined) || (appliedEnd !== undefined)) {
+            const start = appliedStart ?? Number.MIN_SAFE_INTEGER
+            const end = appliedEnd ?? Number.MAX_SAFE_INTEGER
             newArr = newArr.filter((user) => {
                 const assignAt = normalizeMs(user.assignAt)
                 if (!assignAt) return false
@@ -202,14 +224,14 @@ const SecondTable = () => {
             })
         }
         if (appliedLabels && appliedLabels.length > 0) {
-            const normalizedApplied = appliedLabels.map(a => String(a ?? "").trim().toLowerCase()).filter(Boolean)
+            const normalizedApplied = (appliedLabels ?? []).map(a => String(a ?? "").trim().toLowerCase()).filter(Boolean)
             newArr = newArr.filter((user) => {
                 const labels = (user.labels ?? []).map(l => String(l ?? "").trim().toLowerCase())
                 return labels.some((l) => normalizedApplied.includes(l))
             })
         }
         return newArr
-    }, [users, appliedUid, appliedRange, debouncedSearch, appliedLabels])
+    }, [users, appliedUid, appliedStart, appliedEnd, debouncedSearch, appliedLabels])
 
     React.useEffect(() => {
         const t = setTimeout(() => setDebouncedSearch(searchText), 500)
@@ -263,38 +285,39 @@ const SecondTable = () => {
                         options={React.useMemo(() => Array.from(new Set(users.flatMap(u => u.labels ?? []).map(l => String(l ?? "").trim()))).filter(Boolean).map(l => ({ value: l, text: l })), [users])}
                         placeholder='Chọn nhãn'
                         value={selectedLabels}
-                        onChange={(vals) => setSelectedLabels(vals)}
+                        onChange={(vals) => setValue('selectedLabels', vals)}
                         className="min-w-[150px]"
                     />
                 </div>
-                <Calendar22 value={startDate} onSelect={(d) => setStartDate(d)} placeholder="Ngày bắt đầu" />
+                <Calendar22 value={watchedStartDate} onSelect={(d) => setValue('startDate', d)} placeholder="Ngày bắt đầu" />
                 /
-                <Calendar22 value={endDate} onSelect={(d) => setEndDate(d)} placeholder="Ngày kết thúc" />
+                <Calendar22 value={watchedEndDate} onSelect={(d) => setValue('endDate', d)} placeholder="Ngày kết thúc" />
                 <div className="flex items-center gap-2">
                     {((watchedUid && watchedUid !== appliedUid) ||
-                        (toStartMs(startDate) !== appliedRange.start) ||
-                        (toEndMs(endDate) !== appliedRange.end) ||
+                        (toStartMs(watchedStartDate) !== appliedStart) ||
+                        (toEndMs(watchedEndDate) !== appliedEnd) ||
                         labelsChanged) && (
                             <PrimaryTooltip content="Áp dụng bộ lọc">
                                 <Button size="sm" onClick={() => {
-                                    const s = toStartMs(startDate)
-                                    const e = toEndMs(endDate)
+                                    const s = toStartMs(watchedStartDate)
+                                    const e = toEndMs(watchedEndDate)
                                     let start = s
                                     let end = e
                                     if (s && e && s > e) {
                                         start = e
                                         end = s
                                     }
-                                    setAppliedUid(watchedUid ? watchedUid : undefined)
-                                    setAppliedRange({ start, end })
-                                    setAppliedLabels(selectedLabels)
+                                    setValue('appliedUid', watchedUid ? watchedUid : undefined)
+                                    setValue('appliedStart', start)
+                                    setValue('appliedEnd', end)
+                                    setValue('appliedLabels', selectedLabels)
                                 }}>
                                     <FaFilter />
                                 </Button>
                             </PrimaryTooltip>
                         )}
                     <PrimaryTooltip content="Xóa Lọc">
-                        <Button size="sm" onClick={() => { reset({ uid: "" }); setAppliedUid(undefined); setStartDate(undefined); setEndDate(undefined); setAppliedRange({}); setSelectedLabels([]); setAppliedLabels([]) }}>
+                        <Button size="sm" onClick={() => { reset({ uid: "" }); setValue('appliedUid', undefined); setValue('startDate', undefined); setValue('endDate', undefined); setValue('appliedStart', undefined); setValue('appliedEnd', undefined); setValue('selectedLabels', []); setValue('appliedLabels', []) }}>
                             <MdClear />
                         </Button>
                     </PrimaryTooltip>
