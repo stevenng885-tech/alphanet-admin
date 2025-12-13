@@ -23,9 +23,9 @@ export function orderBy<T>(arr: T[], sortType: TypeSortType, key: keyof T): T[] 
 
 
 export const selectUsersByRange = (arr: Array<TypeUser>, { start, end }: { start: number, end: number }) => {
-    return arr.filter((user) => user.createdAt >= start && user.createdAt <= end)
+    return arr.filter((user) => user.createdAt >= start && user.createdAt < end)
 }
 
 export const selectUserslasteUpdateByRange = (arr: Array<TypeUser>, { start, end }: { start: number, end: number }) => {
-    return arr.filter((user) => user.lasteUpadteAt >= start && user.lasteUpadteAt <= end)
+    return arr.filter((user) => user.lasteUpadteAt >= start && user.lasteUpadteAt < end)
 }

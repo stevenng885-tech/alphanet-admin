@@ -2,8 +2,8 @@
 import Button from '@/components/ui/button/Button';
 import { useAdmin } from "@/hooks/useAdmin";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useUsers } from '@/hooks/useUsers';
 import { getUserByDocId } from "@/lib/redux/features/firebase/firebaseAPI";
-import { updateUsersAsync } from "@/lib/redux/features/firebase/firebaseSlice";
 import { useAppDispatch } from "@/lib/redux/hooks";
 import { TypeUser } from '@/types/firebase';
 import { TypeEdiUserFormData } from "@/types/form";
@@ -19,7 +19,6 @@ import TextArea from "./input/TextArea";
 import Label from "./Label";
 import MultiSelect from './MultiSelect';
 import Select from './Select';
-import { useUsers } from '@/hooks/useUsers';
 
 const rules = {
     name: {
@@ -247,7 +246,7 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                             <div className="relative">
                                 <Select
                                     options={options}
-                                    placeholder="Select an option"
+                                    placeholder="Chọn Người Chăm Sóc"
                                     className="dark:bg-dark-900"
                                 />
                                 <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">

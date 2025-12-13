@@ -30,6 +30,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const boxRef = React.useRef<HTMLDivElement>(null);
 
   const selectedOptions = value ?? [];
+  const availableOptions = useMemo(
+    () => options.filter((o) => !selectedOptions.includes(o.value)),
+    [options, selectedOptions]
+  );
 
   const toggleDropdown = () => {
     if (disabled) return;
@@ -147,24 +151,28 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex flex-col">
-                {options.map((option, index) => {
-                  const active = selectedOptions.includes(option.value);
-                  return (
-                    <div
-                      key={index}
-                      className="w-full cursor-pointer border-b border-gray-200 dark:border-gray-800 hover:bg-primary/5"
-                      onClick={() => handleSelect(option.value)}
-                    >
+                {availableOptions.length === 0 ? (
+                  <div className="p-3 text-sm text-gray-500">Không có lựa chọn nào</div>
+                ) : (
+                  availableOptions.map((option, index) => {
+                    const active = selectedOptions.includes(option.value);
+                    return (
                       <div
-                        className={`relative flex w-full items-center p-2 pl-2 ${active ? "bg-primary/10" : ""}`}
+                        key={index}
+                        className="w-full cursor-pointer border-b border-gray-200 dark:border-gray-800 hover:bg-primary/5"
+                        onClick={() => handleSelect(option.value)}
                       >
-                        <div className="mx-2 leading-6 text-gray-800 dark:text-white/90">
-                          {option.text}
+                        <div
+                          className={`relative flex w-full items-center p-2 pl-2 ${active ? "bg-primary/10" : ""}`}
+                        >
+                          <div className="mx-2 leading-6 text-gray-800 dark:text-white/90">
+                            {option.text}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    )
+                  })
+                )}
               </div>
             </div>
           )}

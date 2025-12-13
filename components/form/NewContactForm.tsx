@@ -202,7 +202,7 @@ export default function NewContactForm() {
                             <div className="relative">
                                 <Select
                                     options={options}
-                                    placeholder="Select an option"
+                                    placeholder="Chọn Người Chăm Sóc"
                                     className="dark:bg-dark-900"
                                     {...register("assignId")}
                                 />

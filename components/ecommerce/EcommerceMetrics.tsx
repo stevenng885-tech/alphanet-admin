@@ -5,8 +5,17 @@ import { AiFillInteraction } from "react-icons/ai";
 import { FaLongArrowAltDown, FaLongArrowAltUp } from "react-icons/fa";
 import { FaUserGroup } from "react-icons/fa6";
 import Badge from "../ui/badge/Badge";
+import React from "react";
 
-const Grow = ({ percent }: { percent: number }) => {
+const Grow = ({ percent }: { percent: number | null }) => {
+
+  if (percent === null) {
+    return (
+      <Badge color="light">
+        —
+      </Badge>
+    )
+  }
 
   if (percent > 0) {
     return (
@@ -16,6 +25,14 @@ const Grow = ({ percent }: { percent: number }) => {
       </Badge>
     )
   }
+  if (percent === 0) {
+    return (
+      <Badge color="light">
+        {percent.toFixed(2)}%
+      </Badge>
+    )
+  }
+
   return (
     <Badge color="error">
       <FaLongArrowAltDown className="text-error-500" />
@@ -26,36 +43,48 @@ const Grow = ({ percent }: { percent: number }) => {
 
 export const EcommerceMetrics = () => {
   const { users } = useUsers()
-  const currentTimeStamp = new Date().getTime()
-  const oneDayMilisecond = (60 * 60 * 24) * 1000
-  const excessTime = currentTimeStamp % oneDayMilisecond
+  const oneDayMilisecond = 24 * 60 * 60 * 1000
+  const [timeState, setTimeState] = React.useState({ now: 0, startOfTodayMs: 0, startOfYesterdayMs: 0 })
+
+  React.useEffect(() => {
+    const now = Date.now()
+    const startOfToday = new Date(now)
+    startOfToday.setHours(0, 0, 0, 0)
+    const startOfTodayMs = startOfToday.getTime()
+    const startOfYesterdayMs = startOfTodayMs - oneDayMilisecond
+    setTimeState({ now, startOfTodayMs, startOfYesterdayMs })
+  }, [])
 
   const usersInteractToDay = selectUserslasteUpdateByRange(users, {
-    start: currentTimeStamp - excessTime,
-    end: currentTimeStamp
+    start: timeState.startOfTodayMs,
+    end: timeState.now
   })
+
   const usersInteractYesterDay = selectUserslasteUpdateByRange(users, {
-    start: currentTimeStamp - excessTime - oneDayMilisecond,
-    end: currentTimeStamp - excessTime
+    start: timeState.startOfYesterdayMs,
+    end: timeState.startOfTodayMs
   })
 
   const newUsersToDay = selectUsersByRange(users, {
-    start: currentTimeStamp - excessTime,
-    end: currentTimeStamp
+    start: timeState.startOfTodayMs,
+    end: timeState.now
   })
 
   const newUsersYesterday = selectUsersByRange(users, {
-    start: currentTimeStamp - excessTime - oneDayMilisecond,
-    end: currentTimeStamp - excessTime
+    start: timeState.startOfYesterdayMs,
+    end: timeState.startOfTodayMs
   })
 
-  const percentChange = (oldValue: number, newValue: number): number => {
-    if (oldValue === 0) return 0;
+  const percentChange = (oldValue: number, newValue: number): number | null => {
+    // If no previous data and no new data, zero change
+    if (oldValue === 0 && newValue === 0) return 0
+    // If no previous data but there is new data, represent as "new"
+    if (oldValue === 0 && newValue > 0) return null
     return ((newValue - oldValue) / oldValue) * 100;
   };
 
-  const newUserComparison = percentChange(usersInteractYesterDay.length, usersInteractToDay.length)
-  const interactUserComparison = percentChange(newUsersYesterday.length, newUsersToDay.length)
+  const newUserComparison = percentChange(newUsersYesterday.length, newUsersToDay.length)
+  const interactUserComparison = percentChange(usersInteractYesterDay.length, usersInteractToDay.length)
 
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
