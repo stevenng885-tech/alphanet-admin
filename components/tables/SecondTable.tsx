@@ -6,7 +6,7 @@ import { TypeAssign, TypeUser } from '@/types/firebase';
 import { orderBy } from '@/utils/shared/array';
 import React from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-import { FaAngleDown, FaFilter } from 'react-icons/fa';
+import { FaAngleDown, FaEye, FaFilter, FaPhone } from 'react-icons/fa';
 import { MdClear } from 'react-icons/md';
 import { PrimaryTooltip } from '../common/PrimaryTooltip';
 import Select from '../form/Select';
@@ -23,6 +23,8 @@ import {
     TableRow,
 } from "../ui/table";
 import { Calendar22 } from '../datePicker/Calendar22';
+import { LuEyeClosed } from "react-icons/lu";
+import { IoIosCopy } from 'react-icons/io';
 
 type TypeFormData = {
     uid?: string
@@ -39,6 +41,7 @@ const SecondTable = () => {
     const [startDate, setStartDate] = React.useState<Date | undefined>(undefined)
     const [endDate, setEndDate] = React.useState<Date | undefined>(undefined)
     const [appliedRange, setAppliedRange] = React.useState<{ start?: number; end?: number }>({})
+    const [hiddenPhones, setHiddenPhones] = React.useState<Record<string, boolean>>({})
 
     type UserWithLastAssign = TypeUser & (TypeAssign extends Array<infer U> ? U : never)
 
@@ -68,6 +71,36 @@ const SecondTable = () => {
     const normalizeMs = (ts?: number) => {
         if (!ts) return undefined
         return ts < 1e12 ? ts * 1000 : ts
+    }
+
+    const maskPhone = (p?: string) => {
+        if (!p) return ""
+        const s = String(p)
+        const last3 = s.slice(-3)
+        const masked = "*".repeat(Math.max(0, s.length - 3)) + last3
+        return masked
+    }
+
+    const toggleHiddenPhone = (id: string) => {
+        setHiddenPhones((prev) => ({ ...prev, [id]: !prev[id] }))
+    }
+
+    const copyToClipboard = async (text?: string) => {
+        if (!text) return
+        try {
+            await navigator.clipboard.writeText(text)
+        } catch (e) {
+            console.error(e)
+        }
+    }
+
+    const callPhone = (number?: string) => {
+        if (!number) return
+        try {
+            window.open(`tel:${number}`)
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     const converUserr = React.useMemo(() => {
@@ -210,14 +243,29 @@ const SecondTable = () => {
                                         {getTime(order.assignAt)}
                                     </TableCell>
                                     <TableCell className="px-5 py-4 sm:px-6 text-start" >
+                                        {order.name}
+                                    </TableCell>
+                                    <TableCell className="flex gap-2 px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         <div className="flex items-center gap-3" >
                                             <span className="block font-medium text-gray-800 text-theme-sm dark:text-white/90" >
-                                                {order.name}
+                                                {!hiddenPhones[order.id] ? maskPhone(order.phone) : order.phone}
                                             </span>
+                                            <PrimaryTooltip content={!hiddenPhones[order.id] ? "Hiện Số Điện Thoại" : "Ẩn Số Điện Thoại"}>
+                                                <Button size="sm" variant="outline" onClick={() => toggleHiddenPhone(order.id)}>
+                                                    {!hiddenPhones[order.id] ? <FaEye /> : <LuEyeClosed />}
+                                                </Button>
+                                            </PrimaryTooltip>
+                                            <PrimaryTooltip content="Sao Chép Số Điện Thoại">
+                                                <Button size="sm" variant="outline" onClick={() => copyToClipboard(order.phone)}>
+                                                    <IoIosCopy />
+                                                </Button>
+                                            </PrimaryTooltip>
+                                            <PrimaryTooltip content="Gọi Số Điện Thoại">
+                                                <Button size="sm" variant="outline" onClick={() => callPhone(order.phone)}>
+                                                    <FaPhone />
+                                                </Button>
+                                            </PrimaryTooltip>
                                         </div>
-                                    </TableCell>
-                                    < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                        {order.phone}
                                     </TableCell>
                                     < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                         <Employee assign={order.assign} />
