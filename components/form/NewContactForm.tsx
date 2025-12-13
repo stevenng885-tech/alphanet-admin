@@ -59,7 +59,6 @@ export default function NewContactForm() {
         reset
     } = form
     const currentUser = useUser()
-
     const { clerkUsers } = useAdmin()
     const { isAdmin } = useCurrentUser()
 
@@ -77,16 +76,27 @@ export default function NewContactForm() {
         try {
             if (!currentUser.user) return Error()
             if (isAdmin) {
-                const employee = clerkUsers.find((order) => order.id === data.assignId)
-                if (!employee) return Error()
+                let employeeInfo;
+                if (data.assignId) {
+                    const employee = clerkUsers.find((order) => order.id === data.assignId)
+                    if (!employee) return Error()
+                    employeeInfo = {
+                        employeeName: employee.username as string,
+                        uid: employee.id as string
+                    }
+                } else {
+                    employeeInfo = {
+                        employeeName: currentUser.user.username as string,
+                        uid: currentUser.user.id
+                    }
+                }
                 const metadata: TypeAddNewUserData = {
                     ...data,
                     labels: (data.labels ?? []).map(l => String(l ?? "").trim()),
                     assign: [
                         {
                             assignAt: timeStamp(),
-                            employeeName: employee.username as string,
-                            uid: employee.id as string
+                            ...employeeInfo
                         }
                     ],
                 }
@@ -156,9 +166,15 @@ export default function NewContactForm() {
                         <Label>Tình Trạng</Label>
                         <Input
                             type="text"
+                            error={!!(errors.status)}
                             {...register("status")}
                         />
                     </div>
+                    {
+                        errors.status && <div className='flex justify-start items-center gap-1 text-sm text-red-500 mx-1 capitalize'>
+                            <IoIosWarning /> {errors.status.message}
+                        </div>
+                    }
                     <div>
                         <Label>Nhãn</Label>
                         <Controller
@@ -215,6 +231,11 @@ export default function NewContactForm() {
                                 <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
                                     <FaAngleDown />
                                 </span>
+                                {
+                                    errors.assignId && <div className='flex justify-start items-center gap-1 text-sm text-red-500 mx-1 capitalize'>
+                                        <IoIosWarning /> {errors.assignId.message}
+                                    </div>
+                                }
                             </div>
                         </div>
                     }

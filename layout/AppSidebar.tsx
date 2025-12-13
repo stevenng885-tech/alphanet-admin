@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
   },
   {
     icon: <FaCalendarCheck />,
-    name: "Nhiệm Vụ Hằng Ngày",
+    name: "Báo Cáo Hằng Ngày",
     path: "/daily-tasks",
   },
 
