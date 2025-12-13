@@ -54,13 +54,64 @@ const SecondTable = () => {
 
     type UserWithLastAssign = TypeUser & (TypeAssign extends Array<infer U> ? U : never)
 
-    const getTime = (timeStamp: number) => {
+    const [now, setNow] = React.useState<number>(() => Date.now())
+    React.useEffect(() => {
+        const t = setInterval(() => setNow(Date.now()), 60 * 1000)
+        return () => clearInterval(t)
+    }, [])
+
+    const getTime = (timeStamp?: number, highlight = false) => {
+        if (!timeStamp) return <div className='flex flex-col gap-1 text-gray-400'>(Không có)</div>
+
         const time = new Date(timeStamp)
         const pad2 = (n: number) => String(n).padStart(2, "0")
+
+        const n = now
+        const diffMs = Math.max(0, n - timeStamp)
+        const seconds = Math.floor(diffMs / 1000)
+        const minutes = Math.floor(seconds / 60)
+        const hours = Math.floor(minutes / 60)
+        const days = Math.floor(hours / 24)
+
+        let ago = ""
+        if (seconds < 60) {
+            ago = `Vài giây trước`
+        } else if (minutes < 60) {
+            ago = `${minutes} phút trước`
+        } else if (hours < 24) {
+            const remMinutes = minutes - hours * 60
+            ago = `${hours} giờ${remMinutes > 0 ? ` ${remMinutes} phút` : ""} trước`
+        } else {
+            const daysOnly = days
+            const remHours = hours - daysOnly * 24
+            ago = `${daysOnly} ngày${remHours > 0 ? ` ${remHours} giờ` : ""} trước`
+        }
+
+        const timeText = `${pad2(time.getHours())}:${pad2(time.getMinutes())}:${pad2(time.getSeconds())}`
+        const dateText = `${pad2(time.getDate())}/${pad2(time.getMonth() + 1)}/${String(time.getFullYear()).slice(-2)}`
+
+        const timeMutedClass = "text-xs text-gray-500 dark:text-gray-400"
+        let agoClass = "text-xs text-gray-500 dark:text-gray-400"
+        if (highlight) {
+            if (minutes < 60) {
+                agoClass = "text-sm font-semibold text-green-600 dark:text-green-400"
+            } else if (hours < 24) {
+                agoClass = "text-sm font-semibold text-brand-500 dark:text-brand-400"
+            } else {
+                agoClass = "text-sm font-semibold text-gray-900 dark:text-white/90"
+            }
+        }
+
         return (
-            <div className='flex flex-col gap-1'>
-                <p>{pad2(time.getHours())}:{pad2(time.getMinutes())}:{pad2(time.getSeconds())}</p>
-                <p>{pad2(time.getDate())}/{pad2(time.getMonth() + 1)}/{String(time.getFullYear()).slice(-2)}</p>
+            <div className='flex flex-col gap-0.5' title={time.toLocaleString()}>
+                {highlight ? (
+                    <div className={agoClass}>{ago}</div>
+                ) : (
+                    <div className={timeMutedClass}>{timeText} <span className='mx-1'>—</span> {dateText}</div>
+                )}
+                <div className={highlight ? timeMutedClass : "text-xs text-gray-400 dark:text-gray-500"}>
+                    {!highlight ? ago : `${timeText} — ${dateText}`}
+                </div>
             </div>
         )
     }
@@ -316,7 +367,7 @@ const SecondTable = () => {
                                 converUserr.map((order: UserWithLastAssign) => (
                                     <TableRow key={order.id}>
                                         <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                            {getTime(order.assignAt)}
+                                            {getTime(order.assignAt, false)}
                                         </TableCell>
                                         <TableCell className="px-5 py-4 sm:px-6 text-start" >
                                             {order.name}
@@ -347,7 +398,7 @@ const SecondTable = () => {
                                             <Employee assign={order.assign} />
                                         </TableCell>
                                         < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
-                                            {getTime(order.lasteUpadteAt)}
+                                            {getTime(order.lasteUpadteAt, true)}
                                         </TableCell>
                                         < TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400" >
                                             {order.status}
