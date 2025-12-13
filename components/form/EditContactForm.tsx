@@ -245,6 +245,7 @@ export default function EditContactForm({ docId, isDisable = false }: Props) {
                             <Label>Chỉ Định</Label>
                             <div className="relative">
                                 <Select
+                                    disabled={isDisable}
                                     options={options}
                                     placeholder="Chọn Người Chăm Sóc"
                                     className="dark:bg-dark-900"

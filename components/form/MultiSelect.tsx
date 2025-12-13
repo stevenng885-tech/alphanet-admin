@@ -31,7 +31,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const boxRef = React.useRef<HTMLDivElement>(null);
 
-  const selectedOptions = value ?? [];
+  const selectedOptions = React.useMemo(() => value ?? [], [value]);
   const availableOptions = useMemo(
     () => options.filter((o) => !selectedOptions.includes(o.value)),
     [options, selectedOptions]
@@ -51,6 +51,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   const removeOption = (_index: number, optionValue: string) => {
+    if (disabled) return;
     const next = selectedOptions.filter((v) => v !== optionValue);
     onChange(next);
   };
@@ -64,8 +65,10 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   );
   useClickOutside(boxRef, () => setIsOpen(false))
 
+  const topDisabledClass = disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+
   return (
-    <div className={`w-full ${className}`} >
+    <div className={`w-full ${className} ${disabled ? "pointer-events-auto" : ""}`} >
       {label && (
         <label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
           {label}
@@ -76,7 +79,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         <div className="relative flex flex-col items-center">
           <div
             onClick={toggleDropdown}
-            className="w-full"
+            className={`w-full ${topDisabledClass}`}
             onBlur={onBlur}
             tabIndex={0}
           >
@@ -118,12 +121,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
               <div className="flex items-center py-1 pl-1 pr-1 w-7">
                 <button
                   type="button"
+                  disabled={disabled}
+                  aria-disabled={disabled}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     toggleDropdown();
                   }}
-                  className="w-5 h-5 text-gray-700 outline-hidden cursor-pointer focus:outline-hidden dark:text-gray-400"
+                  className={`w-5 h-5 text-gray-700 outline-hidden focus:outline-hidden dark:text-gray-400 ${disabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
                 >
                   <svg
                     className={`stroke-current ${isOpen ? "rotate-180" : ""}`}

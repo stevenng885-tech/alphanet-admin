@@ -30,7 +30,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
 
     // Add styles for the different states
     if (disabled) {
-      inputClasses += ` text-gray-500 border-gray-300 cursor-not-allowed dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700`;
+      inputClasses += ` text-gray-500 border-gray-300 cursor-not-allowed bg-gray-100 opacity-80 dark:bg-gray-800 dark:opacity-80 dark:text-gray-400 dark:border-gray-700`;
     } else if (error) {
       inputClasses += ` text-error-800 border-error-500 focus:ring-3 focus:ring-error-500/10  dark:text-error-400 dark:border-error-500`;
     } else if (success) {
